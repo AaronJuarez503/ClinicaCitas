@@ -1,0 +1,65 @@
+<!-- <html lang="en"
+    xmlns="http://thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="/layouts/_mainLayout.html">
+
+<div layout:fragment="content">
+
+    
+    <div th:if="${msg != null}">
+        <script>
+            Swal.fire({
+            title: "Confirmación",
+            text: '[[${msg}]]',
+            icon: "success"
+            });
+        </script>
+    </div>
+
+   
+    <div th:if="${error != null}">
+        <script>
+            Swal.fire({
+                title: "Error",
+                text: '[[${error}]]',
+                icon: "error"
+            });
+        </script>
+    </div>
+
+     <h1>Listado de clinicas</h1>
+    <a th:href="@{/clinicas/create}" class="btn btn-outline-primary">Nuevo grupo</a>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Telefono</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${clinicas}">
+            <td th:text="${item.id}"></td>
+            <td th:text="${item.nombre}"></td>
+            <td th:text="${item.descripcion}"></td>
+            <td th:text="${item.telefono}"></td>
+            <td>
+                <a th:href="@{/clinicas/details/{id} (id = ${item.id}) }" class="btn btn-outline-secondary">Detalles</a> |
+                <a th:href="@{/clinicas/edit/{id} (id = ${item.id}) }" class="btn btn-outline-info">Editar</a> |
+                <a th:href="@{/clinicas/remove/{id} (id = ${item.id}) }" class="btn btn-outline-danger">Eliminar</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item" th:each="pageNumber : ${pageNumbers}">
+                <a class="page-link" th:href="@{|/clinicas=${pageNumbers}|}" th:text="${pageNumbers}"></a>
+            </li>
+        </ul>
+    </nav> 
+
+</div> -->
