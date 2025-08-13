@@ -1,1 +1,1 @@
-# ClinicaCitas y Aaron
+# ClinicaCitas y Aaron Juarez
