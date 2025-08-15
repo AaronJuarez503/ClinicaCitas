@@ -1,20 +1,20 @@
-// package org.esfe.servicios.interfaces;
+package org.esfe.servicios.interfaces;
 
-// import org.esfe.modelos.clinica;
-// import org.springframework.data.domain.Page;
-// import org.springframework.data.domain.Pageable;
+import org.esfe.modelos.Clinica;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-// import java.util.List;
-// import java.util.Optional;
+import java.util.List;
+import java.util.Optional;
 
-// public interface IClinicaService {
-//     Page<clinica> buscarTodosPaginados(Pageable pageable);
+public interface IClinicaService {
+    Page<Clinica> buscarTodosPaginados(Pageable pageable);
 
-//     List<clinica> obtenerTodos();
+    List<Clinica> obtenerTodos();
 
-//     Optional<clinica> buscarPorId(Integer id);
+    Optional<Clinica> buscarPorId(Integer id);
 
-//     clinica crearOEditar(clinica clinica);
+    Clinica crearOEditar(Clinica clinica);
 
-//     void eliminarPorId(Integer id);
-// }
+    void eliminarPorId(Integer id);
+}
