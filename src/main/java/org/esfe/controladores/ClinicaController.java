@@ -23,11 +23,13 @@ public class ClinicaController {
 
     @GetMapping
     public String index(Model model, @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+        
         int currentPage = page.orElse(1) - 1;
         int pageSize = size.orElse(10);
-        Pageable pageable = PageRequest.of(currentPage, pageSize);
 
+        Pageable pageable = PageRequest.of(currentPage, pageSize);
         Page<Clinica> clinicas = clinicaService.buscarTodosPaginados(pageable);
+        
         model.addAttribute("clinicas", clinicas);
 
         int totalPages = clinicas.getTotalPages();
