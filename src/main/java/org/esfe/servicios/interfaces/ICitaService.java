@@ -17,5 +17,5 @@ public interface ICitaService {
 
     Cita crearOCambiar(Cita cita);
 
-    void eliminarPorId(Integerid);
+    void eliminarPorId(Integer id);
 }

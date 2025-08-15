@@ -1,8 +1,5 @@
 package org.esfe.servicios.implementaciones;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.esfe.modelos.Cita;
 import org.esfe.repositorios.ICitaRepository;
 import org.esfe.servicios.interfaces.ICitaService;
@@ -11,8 +8,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
-public class CitaServicelmpl implements ICitaService {
+public class CitaServiceImpl implements ICitaService {
 
     @Autowired
     private ICitaRepository citaRepository;
@@ -40,11 +40,5 @@ public class CitaServicelmpl implements ICitaService {
     @Override
     public void eliminarPorId(Integer id) {
         citaRepository.deleteById(id);
-    }
-
-    @Override
-    public void eliminarPorId() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'eliminarPorId'");
     }
 }
