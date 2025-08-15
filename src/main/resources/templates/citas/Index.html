@@ -1,0 +1,71 @@
+<html lang="en"
+    xmlns="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="/layouts/_mainLayout.html">
+
+<div layout:fragment="content">
+
+    <!-- Alertas -->
+    <div th:if="${msg != null}">
+        <script>
+            Swal.fire({
+                title: "Confirmación",
+                text: '[[${msg}]]',
+                icon: "success"
+            });
+        </script>
+    </div>
+
+    <div th:if="${error != null}">
+        <script>
+            Swal.fire({
+                title: "Error",
+                text: '[[${error}]]',
+                icon: "error"
+            });
+        </script>
+    </div>
+
+    <h1>Listado de Citas</h1>
+
+    <a th:href="@{/cita/create}" class="btn btn-outline-primary">Nueva Cita</a>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Paciente</th>
+            <th>Médico</th>
+            <th>Fecha</th>
+            <th>Motivo</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${citas}">
+            <td th:text="${item.id}"></td>
+            <td th:text="${item.paciente.nombre}"></td>
+            <td th:text="${item.medico.nombre}"></td>
+            <td th:text="${#temporals.format(item.fecha, 'dd/MM/yyyy HH:mm')}"></td>
+            <td th:text="${item.motivo}"></td>
+            <td th:text="${item.estado}"></td>
+            <td>
+                <a th:href="@{/cita/details/{id}(id=${item.id})}" class="btn btn-outline-secondary">Detalles</a> |
+                <a th:href="@{/cita/edit/{id}(id=${item.id})}" class="btn btn-outline-info">Editar</a> |
+                <a th:href="@{/cita/remove/{id}(id=${item.id})}" class="btn btn-outline-danger">Eliminar</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Paginación -->
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item" th:each="pageNumber : ${pageNumbers}">
+                <a class="page-link" th:href="@{'/cita?page=' + ${pageNumber}}" th:text="${pageNumber}"></a>
+            </li>
+        </ul>
+    </nav> 
+
+</div>
