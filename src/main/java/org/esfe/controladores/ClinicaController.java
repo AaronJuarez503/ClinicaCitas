@@ -8,7 +8,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,4 +44,52 @@ public class ClinicaController {
 
         return "clinica/index";
     }
+
+@GetMapping("/create")
+public String crear(Clinica clinica) {
+    return "clinica/create";
+}
+
+@PostMapping("/save")
+    public String save(Clinica clinica, BindingResult result, Model model, RedirectAttributes attributes){
+        if(result.hasErrors()){
+            model.addAttribute(clinica);
+            attributes.addFlashAttribute("error", "No se pudo guardar debido a un error.");
+            return "clinica/create";
+        }
+
+        clinicaService.crearOEditar(clinica);
+        attributes.addFlashAttribute("msg", "Clinica creada correctamente");
+        return "redirect:/clinica";
+    }
+
+    @GetMapping("/details/{id}")
+    public String details(@PathVariable("id") Integer id, Model model){
+        Clinica clinica = clinicaService.buscarPorId(id).get();
+        model.addAttribute("clinica", clinica);
+        return "clinica/details";
+
+    }
+
+    @GetMapping("/edit/{id}")
+    public String edit(@PathVariable("id") Integer id, Model model){
+        Clinica clinica = clinicaService.buscarPorId(id).get();
+        model.addAttribute("clinica", clinica);
+        return "clinica/edit";
+    }
+
+    @GetMapping("/remove/{id}")
+    public String remove(@PathVariable("id") Integer id, Model model){
+        Clinica clinica = clinicaService.buscarPorId(id).get();
+        model.addAttribute("clinica", clinica);
+        return "clinica/delete";
+    }
+
+    @PostMapping("/delete")
+    public String delete(Clinica clinica, RedirectAttributes attributes){
+        clinicaService.eliminarPorId(clinica.getId());
+        attributes.addFlashAttribute("msg", "clinica eliminada correctamente");
+        return "redirect:/clinica";
+    }
+
 }

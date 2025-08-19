@@ -1,0 +1,29 @@
+<html lang="en"
+    xmlns="http://thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="/layouts/_mainLayout.html">
+
+<div layout:fragment="content">
+
+     <h1>Detalles de clinica</h1>
+    <div>
+        <hr />
+        <dl class="row">
+            <dt class = "col-sm-2" >ID</dt>
+            <dd class = "col-sm-10" th:text="${clinica.id}"></dd>
+
+            <dt class = "col-sm-2">Nombre</dt>
+            <dd class = "col-sm-10" th:text="${clinica.nombre}"></dd>
+
+            <dt class = "col-sm-2">Direccion</dt>
+            <dd class = "col-sm-10" th:text="${clinica.direccion}"></dd>
+
+            <dt class = "col-sm-2">Telefono</dt>
+            <dd class = "col-sm-10" th:text="${clinica.telefono}"></dd>
+        </dl>
+
+        <a th:href="@{/clinica/edit/{id} (id = ${clinica.id}) }" class="btn btn-outline-info">Editar</a> |
+        <a th:href="@{/clinica}">Regresar</a>
+    </div>
+
+</div>

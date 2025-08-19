@@ -28,13 +28,13 @@
     </div>
 
      <h1>Listado de clinicas</h1>
-    <a th:href="@{/clinicas/create}" class="btn btn-outline-primary">Nuevo Clinica</a>
+    <a th:href="@{/clinica/create}" class="btn btn-outline-primary">Nueva Clinica</a>
     <table class="table table-striped">
         <thead>
         <tr>
             <th>ID</th>
             <th>Nombre</th>
-            <th>Descripción</th>
+            <th>Direccion</th>
             <th>Telefono</th>
             <th>Acciones</th>
         </tr>
@@ -43,12 +43,12 @@
         <tr th:each="item : ${clinicas}">
             <td th:text="${item.id}"></td>
             <td th:text="${item.nombre}"></td>
-            <td th:text="${item.descripcion}"></td>
+            <td th:text="${item.direccion}"></td>
             <td th:text="${item.telefono}"></td>
             <td>
-                <a th:href="@{/clinicas/details/{id} (id = ${item.id}) }" class="btn btn-outline-secondary">Detalles</a> |
-                <a th:href="@{/clinicas/edit/{id} (id = ${item.id}) }" class="btn btn-outline-info">Editar</a> |
-                <a th:href="@{/clinicas/remove/{id} (id = ${item.id}) }" class="btn btn-outline-danger">Eliminar</a>
+                <a th:href="@{/clinica/details/{id} (id = ${item.id}) }" class="btn btn-outline-secondary">Detalles</a> |
+                <a th:href="@{/clinica/edit/{id} (id = ${item.id}) }" class="btn btn-outline-info">Editar</a> |
+                <a th:href="@{/clinica/remove/{id} (id = ${item.id}) }" class="btn btn-outline-danger">Eliminar</a>
             </td>
         </tr>
         </tbody>
