@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface IPacienteService {
+    
     List<Paciente> obtenerTodas(); // Método necesario para CitaController
     Optional<Paciente> buscarPorId(Integer id);
     Paciente crearOCambiar(Paciente paciente);
