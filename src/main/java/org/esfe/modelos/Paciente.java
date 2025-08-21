@@ -1,16 +1,17 @@
+// Paciente.java
 package org.esfe.modelos;
 
-import java.time.LocalDate;
+import java.time.LocalDate; // Importar LocalDate
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType; // Importar EnumType
+import jakarta.persistence.Enumerated; // Importar Enumerated
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Email; // Importar Email para validación
+import jakarta.validation.constraints.NotBlank; // Importar NotBlank para validación
 
 @Entity
 @Table(name = "paciente")

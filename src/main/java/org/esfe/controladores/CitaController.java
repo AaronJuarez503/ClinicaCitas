@@ -6,22 +6,39 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.esfe.modelos.Cita;
+import org.esfe.modelos.Medico;
+import org.esfe.modelos.Paciente;
 import org.esfe.servicios.interfaces.ICitaService;
+import org.esfe.servicios.interfaces.IMedicoService;
+import org.esfe.servicios.interfaces.IPacienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/cita")
 public class CitaController {
     @Autowired
     private ICitaService citaService;
+
+    @Autowired
+    private IPacienteService pacienteService;
+
+    @Autowired
+    private IMedicoService medicoService;
 
     @GetMapping
     public String index(Model model, @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
@@ -42,6 +59,62 @@ public class CitaController {
             model.addAttribute("pageNumbers", pageNumbers);
         }
 
-        return "cita/index"; // Nombre de la vista (por ejemplo, cita/index.html)
+        // CAMBIO AQUI: La vista ahora está en la carpeta "citas"
+        return "citas/index";
+    }
+
+    @GetMapping("/create")
+    public String create(Model model) {
+        model.addAttribute("cita", new Cita());
+        List<Paciente> allPacientes = pacienteService.obtenerTodas();
+        List<Medico> allMedicos = medicoService.obtenerTodas();
+
+        model.addAttribute("allPacientes", allPacientes);
+        model.addAttribute("allMedicos", allMedicos);
+        // CAMBIO AQUI: La vista ahora está en la carpeta "citas"
+        return "citas/create";
+    }
+
+    @PostMapping("/save")
+    public String save(@Valid @ModelAttribute("cita") Cita cita, BindingResult result, RedirectAttributes attributes, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("error", "Error al guardar la cita. Verifique los campos.");
+            List<Paciente> allPacientes = pacienteService.obtenerTodas();
+            List<Medico> allMedicos = medicoService.obtenerTodas();
+            model.addAttribute("allPacientes", allPacientes);
+            model.addAttribute("allMedicos", allMedicos);
+            // CAMBIO AQUI: Si hay error, regresa a la vista en la carpeta "citas"
+            return "citas/create";
+        }
+        try {
+            citaService.crearOCambiar(cita);
+            attributes.addFlashAttribute("msg", "Cita guardada exitosamente!");
+        } catch (Exception e) {
+            attributes.addFlashAttribute("error", "Hubo un error al guardar la cita: " + e.getMessage());
+        }
+        return "redirect:/cita";
+    }
+
+    @GetMapping("/details/{id}")
+    public String details(@PathVariable Integer id, Model model) {
+        // CAMBIO AQUI: La vista ahora está en la carpeta "citas"
+        return "citas/details";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String edit(@PathVariable Integer id, Model model) {
+        // CAMBIO AQUI: La vista ahora está en la carpeta "citas"
+        return "citas/edit";
+    }
+
+    @GetMapping("/remove/{id}")
+    public String remove(@PathVariable Integer id, RedirectAttributes attributes) {
+        try {
+            citaService.eliminarPorId(id);
+            attributes.addFlashAttribute("msg", "Cita eliminada exitosamente!");
+        } catch (Exception e) {
+            attributes.addFlashAttribute("error", "Error al eliminar la cita: " + e.getMessage());
+        }
+        return "redirect:/cita";
     }
 }

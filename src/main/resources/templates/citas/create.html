@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/_mainLayout.html}">
+<head>
+    <title>Crear Nueva Cita</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h1 class="mb-4">Crear Nueva Cita</h1>
+
+        <!-- Formulario para la creación de Citas -->
+        <form th:action="@{/cita/save}" th:object="${cita}" method="post">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="paciente">Paciente</label>
+                        <select class="form-control" th:field="*{paciente}" id="paciente" required>
+                            <option value="">Seleccione un paciente</option>
+                            <!-- Se asume que 'allPacientes' se pasa desde el controlador -->
+                            <option th:each="p : ${allPacientes}" th:value="${p.id}" th:text="${p.nombre}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('paciente')}" th:errors="*{paciente}"></div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="medico">Médico</label>
+                        <select class="form-control" th:field="*{medico}" id="medico" required>
+                            <option value="">Seleccione un médico</option>
+                            <!-- Se asume que 'allMedicos' se pasa desde el controlador -->
+                            <option th:each="m : ${allMedicos}" th:value="${m.id}" th:text="${m.nombre}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('medico')}" th:errors="*{medico}"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="fecha">Fecha y Hora</label>
+                        <!-- Usar 'datetime-local' para la entrada combinada de fecha y hora -->
+                        <input type="datetime-local" class="form-control" th:field="*{fecha}" id="fecha" required>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="motivo">Motivo</label>
+                        <textarea class="form-control" th:field="*{motivo}" id="motivo" rows="3" placeholder="Describa el motivo de la cita"></textarea>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('motivo')}" th:errors="*{motivo}"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="estado">Estado</label>
+                        <select class="form-control" th:field="*{estado}" id="estado" required>
+                            <!-- Llenar los valores del enum dinámicamente -->
+                            <option th:each="e : ${T(org.esfe.modelos.Cita.Estado).values()}" th:value="${e}" th:text="${e.name()}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('estado')}" th:errors="*{estado}"></div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+            <button type="submit" class="btn btn-success">Guardar Cita</button>
+            <a th:href="@{/cita}" class="btn btn-secondary ml-2">Regresar</a>
+        </form>
+    </div>
+</body>
+</html>

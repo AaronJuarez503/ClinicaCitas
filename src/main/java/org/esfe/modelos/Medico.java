@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank; // Importar NotBlank para validación
 
 @Entity
 @Table(name = "medico")
@@ -27,7 +27,7 @@ public class Medico {
 
     @ManyToOne
     @JoinColumn(name = "id_clinica", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_medico_clinica"))
-    private Clinica clinica;
+    private Clinica clinica; // Asegúrate de que el modelo Clinica exista
 
     // Getters y Setters
     public Integer getId() {
