@@ -1,0 +1,39 @@
+<html lang="en"
+    xmlns="http://thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="/layouts/_mainLayout.html">
+
+<div layout:fragment="content">
+
+    <h1>Detalles de Paciente</h1>
+    <h3>¿ Estas seguro que deseas eliminar este Paciente ?</h3>
+    <div>
+        <hr />
+        <dl class="row">
+            <dt class = "col-sm-2" >ID</dt>
+            <dd class = "col-sm-10" th:text="${paciente.id}"></dd>
+
+            <dt class = "col-sm-2">Nombre</dt>
+            <dd class = "col-sm-10" th:text="${paciente.nombre}"></dd>
+
+            <dt class = "col-sm-2">fechaNacimiento</dt>
+            <dd class = "col-sm-10" th:text="${paciente.direccion}"></dd>
+
+            <dt class = "col-sm-2">Genero</dt>
+            <dd class = "col-sm-10" th:text="${paciente.telefono}"></dd>
+
+             <dt class = "col-sm-2">telefono</dt>
+            <dd class = "col-sm-10" th:text="${paciente.telefono}"></dd>
+
+             <dt class = "col-sm-2">Email</dt>
+            <dd class = "col-sm-10" th:text="${paciente.telefono}"></dd>
+        </dl>
+
+         <form th:action="@{/paciente/delete}" method="post">
+            <input type="hidden" name="Id" th:value="${paciente.id}">
+            <input type="submit" value="Eliminar" class="btn btn-danger"> |
+            <a th:href="@{/paciente}">Regresar</a>
+        </form>
+
+    </div>
+</div>

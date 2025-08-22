@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/_mainLayout}">
+<head>
+    <title>Crear Paciente</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="mb-0">Registrar Nuevo Paciente</h3>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/paciente/save}" method="post" th:object="${paciente}">
+                                <div class="mb-3">
+                                    <label for="nombre" class="form-label">Nombre Completo</label>
+                                    <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
+                                    <div class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+                                    <input type="date" class="form-control" id="fechaNacimiento" th:field="*{fechaNacimiento}" required>
+                                    <div class="text-danger" th:if="${#fields.hasErrors('fechaNacimiento')}" th:errors="*{fechaNacimiento}"></div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="genero" class="form-label">Género</label>
+                                    <select class="form-select" id="genero" th:field="*{genero}" required>
+                                        <option value="">Seleccione un género</option>
+                                        <option th:each="generoOpt : ${T(org.esfe.modelos.Paciente.Genero).values()}"
+                                                th:value="${generoOpt}" th:text="${generoOpt}"></option>
+                                    </select>
+                                    <div class="text-danger" th:if="${#fields.hasErrors('genero')}" th:errors="*{genero}"></div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="telefono" class="form-label">Teléfono</label>
+                                    <input type="tel" class="form-control" id="telefono" th:field="*{telefono}" 
+                                           pattern="[0-9]{4}-[0-9]{4}" placeholder="0000-0000" required>
+                                    <div class="text-danger" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Correo Electrónico</label>
+                                    <input type="email" class="form-control" id="email" th:field="*{email}" required>
+                                    <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                                </div>
+
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <a th:href="@{/paciente}" class="btn btn-secondary me-md-2">Cancelar</a>
+                                    <button type="submit" class="btn btn-primary">Guardar Paciente</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
