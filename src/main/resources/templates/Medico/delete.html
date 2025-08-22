@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/_mainLayout}">
+<head>
+    <title>Eliminar Médico</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-5 text-center">
+                            <!-- Ícono de eliminación -->
+                            <div class="display-1 text-danger mb-4">
+                                <i class="bi bi-person-x-fill"></i>
+                            </div>
+                            
+                            <!-- Título y subtítulo -->
+                            <h2 class="text-danger mb-4">¿Desea eliminar este médico?</h2>
+
+                            <!-- Información del médico en tarjetas -->
+                            <div class="row g-4 mb-4">
+                                <div class="col-md-6">
+                                    <div class="p-4 border rounded-3 bg-light text-start h-100">
+                                        <h6 class="text-muted mb-2">ID</h6>
+                                        <p class="h5 mb-0" th:text="${medico.id}"></p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-4 border rounded-3 bg-light text-start h-100">
+                                        <h6 class="text-muted mb-2">Nombre</h6>
+                                        <p class="h5 mb-0" th:text="${medico.nombre}"></p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-4 border rounded-3 bg-light text-start h-100">
+                                        <h6 class="text-muted mb-2">Especialidad</h6>
+                                        <p class="h5 mb-0" th:text="${medico.especialidad}"></p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-4 border rounded-3 bg-light text-start h-100">
+                                        <h6 class="text-muted mb-2">Clínica</h6>
+                                        <p class="h5 mb-0" th:text="${medico.clinica?.nombre}"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Mensaje de advertencia -->
+                            <div class="alert alert-danger border-danger bg-danger bg-opacity-10 mb-4">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <span>Esta acción eliminará al médico y todas sus citas asociadas</span>
+                            </div>
+
+                            <!-- Formulario y botones -->
+                            <form th:action="@{/medico/delete/{id}(id=${medico.id})}" method="post">
+                                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                                    <a th:href="@{/medico}" class="btn btn-light btn-lg px-5">
+                                        <i class="bi bi-arrow-left me-2"></i>Cancelar
+                                    </a>
+                                    <button type="submit" class="btn btn-danger btn-lg px-5">
+                                        <i class="bi bi-trash me-2"></i>Eliminar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script para animación de entrada -->
+    <th:block layout:fragment="script">
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const card = document.querySelector('.card');
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.3s ease-out';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100);
+            });
+        </script>
+    </th:block>
+</body>
+</html>
