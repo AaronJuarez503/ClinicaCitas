@@ -24,8 +24,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import java.util.Set;
+import java.util.stream.Collectors;
 import jakarta.validation.Valid;
 
 @Controller
@@ -68,10 +70,15 @@ public class CitaController {
         model.addAttribute("cita", new Cita());
         List<Paciente> allPacientes = pacienteService.obtenerTodas();
         List<Medico> allMedicos = medicoService.obtenerTodas();
+        
+        // Obtener lista única de especialidades
+        Set<String> especialidades = allMedicos.stream()
+                                             .map(Medico::getEspecialidad)
+                                             .collect(Collectors.toSet());
 
         model.addAttribute("allPacientes", allPacientes);
         model.addAttribute("allMedicos", allMedicos);
-        // CAMBIO AQUI: La vista ahora está en la carpeta "citas"
+        model.addAttribute("especialidades", especialidades);
         return "citas/create";
     }
 
@@ -116,5 +123,14 @@ public class CitaController {
             attributes.addFlashAttribute("error", "Error al eliminar la cita: " + e.getMessage());
         }
         return "redirect:/cita";
+    }
+
+    @GetMapping("/medicos-por-especialidad")
+    @ResponseBody
+    public List<Medico> getMedicosPorEspecialidad(@RequestParam String especialidad) {
+        List<Medico> allMedicos = medicoService.obtenerTodas();
+        return allMedicos.stream()
+                        .filter(m -> m.getEspecialidad().equals(especialidad))
+                        .collect(Collectors.toList());
     }
 }

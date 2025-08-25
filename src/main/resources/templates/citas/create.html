@@ -26,15 +26,45 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group mb-3">
+                        <label for="especialidad">Especialidad</label>
+                        <select class="form-control" id="especialidad" required>
+                            <option value="">Seleccione una especialidad</option>
+                            <option th:each="esp : ${especialidades}" th:value="${esp}" th:text="${esp}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
                         <label for="medico">Médico</label>
                         <select class="form-control" th:field="*{medico}" id="medico" required>
                             <option value="">Seleccione un médico</option>
-                            <!-- Se asume que 'allMedicos' se pasa desde el controlador -->
-                            <option th:each="m : ${allMedicos}" th:value="${m.id}" th:text="${m.nombre}"></option>
+                            <option th:each="m : ${allMedicos}" th:value="${m.id}" th:text="${m.nombre}" th:data-especialidad="${m.especialidad}"></option>
                         </select>
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('medico')}" th:errors="*{medico}"></div>
                     </div>
                 </div>
+
+                <script th:inline="javascript">
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const especialidadSelect = document.getElementById('especialidad');
+                        const medicoSelect = document.getElementById('medico');
+                        const medicoOptions = Array.from(medicoSelect.options);
+
+                        especialidadSelect.addEventListener('change', function() {
+                            const selectedEspecialidad = this.value;
+                            
+                            // Limpiar el select de médicos
+                            medicoSelect.innerHTML = '<option value="">Seleccione un médico</option>';
+                            
+                            if (selectedEspecialidad) {
+                                // Filtrar y mostrar solo los médicos de la especialidad seleccionada
+                                medicoOptions.forEach(option => {
+                                    if (option.dataset.especialidad === selectedEspecialidad) {
+                                        medicoSelect.add(option.cloneNode(true));
+                                    }
+                                });
+                            }
+                        });
+                    });
+                </script>
             </div>
 
             <div class="row">
