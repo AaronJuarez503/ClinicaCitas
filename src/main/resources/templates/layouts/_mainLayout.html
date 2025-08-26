@@ -6,44 +6,103 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <title>Sistema de citas para clinicas</title>
-        <!-- Favicon-->
+        <title layout:title-pattern="$CONTENT_TITLE - Sistema de citas para clinicas">Sistema de citas para clinicas</title>
+        <!-- Favicon -->
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+
+        <!-- Font Awesome para los iconos -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
         <!-- Tu archivo CSS personalizado -->
         <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+
+        <!-- Importante: Asegúrate de que no haya NINGÚN otro link a Bootstrap CSS aquí.
+             Si ves una línea como <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+             DEBES ELIMINARLA para evitar conflictos. -->
+
         <!-- SweetAlert2 JS -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <!-- Bootstrap CSS CDN (Asegúrate de que este o el tuyo local esté cargado) -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     </head>
     <body>
-        <!-- Responsive navbar-->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container">
-                <a class="navbar-brand" href="#">Citas clinicas</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li class="nav-item"><a class="nav-link active" aria-current="page" th:href="@{/}">Inicio</a></li>
-                        <li class="nav-item"><a class="nav-link" th:href="@{/cita/create}">Reservar Cita</a></li>
-                        <li class="nav-item"><a class="nav-link" th:href="@{/cita}">Ver Citas</a></li>
-                        <li class="nav-item"><a class="nav-link" th:href="@{/clinica}">Ver Clinicas</a></li>
-                        <li class="nav-item"><a class="nav-link" th:href="@{/medico}">Ver Medicos</a></li>
-                        <li class="nav-item"><a class="nav-link" th:href="@{/paciente}">Ver Pacientes</a></li>
-                    </ul>
+        <div id="wrapper">
+
+            <!-- Sidebar (Menú lateral) -->
+            <div id="sidebar-wrapper">
+                <div class="sidebar-heading-container">
+                    <!-- El botón de toggle ahora está aquí, dentro del encabezado del sidebar -->
+                    <button class="sidebar-toggle-button" id="sidebarToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <span class="sidebar-title">Citas Clínicas</span>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a th:href="@{/}" class="list-group-item"><i class="fas fa-home"></i> Inicio</a>
+                    <a th:href="@{/cita/create}" class="list-group-item"><i class="fas fa-calendar-plus"></i> Reservar Cita</a>
+                    <a th:href="@{/cita}" class="list-group-item"><i class="fas fa-calendar-alt"></i> Ver Citas</a>
+                    <a th:href="@{/clinica}" class="list-group-item"><i class="fas fa-hospital"></i> Ver Clínicas</a>
+                    <a th:href="@{/medico}" class="list-group-item"><i class="fas fa-user-md"></i> Ver Médicos</a>
+                    <a th:href="@{/paciente}" class="list-group-item"><i class="fas fa-users"></i> Ver Pacientes</a>
+                    <a href="#" class="list-group-item sidebar-settings-item"><i class="fas fa-cog"></i> Ajustes y Ayuda</a>
                 </div>
             </div>
-        </nav>
-        <!-- Page content-->
-        <div class="container">
-            <div class="text-center mt-5">
-               <div layout:fragment="content">
-                <p>Changing Contents...</p>
+            <!-- /#sidebar-wrapper -->
+
+            <!-- Contenido principal de la página. Ocupa el espacio restante y se ajusta al sidebar. -->
+            <div id="page-content-wrapper">
+                <div class="container-fluid">
+                   <div layout:fragment="content">
+                        <!-- Este es el espacio para el contenido específico de cada vista de Thymeleaf -->
+                        <p>Contenido principal de la página...</p>
+                   </div>
                 </div>
             </div>
+            <!-- /#page-content-wrapper -->
         </div>
-        <!-- Bootstrap JS y Popper.js, necesarios para la navbar responsive y otros componentes -->
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+        <!-- /#wrapper -->
+
+        <!-- JavaScript para el toggle del sidebar. Los console.log ayudan a depurar. -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const wrapper = document.getElementById('wrapper');
+                const sidebarToggle = document.getElementById('sidebarToggle');
+
+                // Función para alternar la clase 'toggled' en el wrapper
+                function toggleSidebar() {
+                    console.log("Toggle sidebar clicado. Estado actual del wrapper.classList:", wrapper.classList.contains('toggled') ? 'toggled' : 'no toggled');
+                    wrapper.classList.toggle('toggled');
+                    console.log("Nuevo estado del wrapper.classList:", wrapper.classList.contains('toggled') ? 'toggled' : 'no toggled');
+                }
+
+                // Asignar el listener al botón de toggle
+                if (sidebarToggle) {
+                    sidebarToggle.addEventListener('click', toggleSidebar);
+                    console.log("Listener para #sidebarToggle asignado.");
+                } else {
+                    console.error("Error: Elemento #sidebarToggle no encontrado. Asegúrese de que el ID es correcto en _mainLayout.html");
+                }
+
+                // Opcional: Cerrar el sidebar al hacer clic en un enlace del menú
+                const sidebarLinks = document.querySelectorAll('#sidebar-wrapper .list-group-item');
+                sidebarLinks.forEach(link => {
+                    link.addEventListener('click', function(event) {
+                        // Solo cierra el sidebar si está abierto y el clic no fue en el propio botón de toggle
+                        if (wrapper.classList.contains('toggled')) {
+                            // Comprobamos si el clic fue dentro del botón de toggle
+                            const isClickOnToggle = sidebarToggle.contains(event.target) || event.target === sidebarToggle;
+                            if (!isClickOnToggle) {
+                                wrapper.classList.remove('toggled');
+                                console.log("Sidebar cerrado al hacer clic en un enlace.");
+                            }
+                        }
+                    });
+                });
+
+                console.log("Estado inicial del wrapper.classList:", wrapper.classList.contains('toggled') ? 'toggled' : 'no toggled');
+            });
+        </script>
+        <!-- ¡Importante! Si usas Bootstrap JS para algo más, DEBERÍA ESTAR AQUÍ, después de tu JS personalizado.
+             Pero para este diseño de sidebar, no es estrictamente necesario y podría causar conflictos. -->
+        <!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script> -->
+        <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script> -->
     </body>
 </html>
