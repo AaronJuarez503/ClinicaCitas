@@ -1,9 +1,335 @@
-<html lang="en"
-xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-layout:decorate="/layouts/_mainLayout.html">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Reserva de Citas Médicas Online - Paciente</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos generales para el cuerpo y el contenedor */
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5; /* Gris muy claro para el fondo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden; /* Evita el scroll horizontal cuando el menú está oculto */
+        }
+        .container {
+            /* El contenedor ahora abarca el 100% del ancho del body */
+            width: 100%;
+            /* min-height: 100vh; para que el fondo se extienda */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative; /* Para posicionar el icono del menú */
+            /* Eliminados los estilos de tarjeta para que el header se extienda */
+            background-color: transparent;
+            border-radius: 0;
+            box-shadow: none;
+            overflow: visible;
+        }
 
-<div layout:fragment="content">
-    
-    <h1>Hola, Bienvenidos, esta es la pagina principal para el inicio</h1>
+        /* Estilos del encabezado */
+        .header {
+background-image: linear-gradient(135deg, #70f5f1, #00cfb3); /* ¡Aquí está tu degradado! */
+color: white;
+padding: 24px;
+text-align: center;
+ font-size: 1.5rem;
+ font-weight: 600;
+ border-radius: 0;
+ position: relative;
+z-index: 1;
+}
+        /* Nuevo wrapper para el contenido de la app, con el estilo de la tarjeta */
+        .app-content-wrapper {
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 400px; /* Ancho típico de un teléfono */
+            margin: -30px auto 0 auto; /* Margen negativo para solapar con el header, y centrado */
+            flex-grow: 1; /* Permite que este wrapper ocupe el espacio restante */
+            display: flex; /* Asegura que las pantallas internas se muestren correctamente */
+            flex-direction: column;
+            position: relative;
+            z-index: 0; /* Asegura que esté por debajo del header */
+        }
 
-</div>
+        /* Estilos del menú lateral (sidebar) */
+        .sidebar-toggle {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+            z-index: 1002; /* Asegura que esté por encima del contenido */
+        }
+        .sidebar-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .sidebar-toggle svg {
+            width: 30px;
+            height: 30px;
+            color: white; /* Color del icono */
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px; /* Oculto por defecto */
+            width: 280px;
+            height: 100%;
+            background-color: #ffffff;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            transition: left 0.3s ease-in-out;
+            z-index: 1001; /* Por encima del contenido, pero debajo del botón de toggle */
+            padding-top: 60px; /* Espacio para el encabezado si lo tuviera */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 20px;
+        }
+        .sidebar.open {
+            left: 0; /* Visible */
+        }
+
+        .sidebar-header-menu {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 12px 20px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            color: #4a5568;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            text-decoration: none;
+        }
+        .sidebar-nav-item:hover {
+            background-color: #edf2f7;
+            color: #38b2ac;
+        }
+        .sidebar-nav-item.active-menu-item {
+            background-color: #e0f2f2;
+            color: #2c7a7b;
+            font-weight: 600;
+        }
+        .sidebar-nav-item svg {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            color: #a0aec0;
+        }
+        .sidebar-nav-item:hover svg, .sidebar-nav-item.active-menu-item svg {
+            color: #38b2ac;
+        }
+
+        /* Overlay para cuando el menú está abierto */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+        }
+        .overlay.active {
+            display: block;
+        }
+
+        /* Estilos de las pantallas de contenido */
+        .screen {
+            padding: 24px;
+            flex-grow: 1;
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            text-align: center;
+            overflow-y: auto;
+            /* El fondo ya lo tiene el app-content-wrapper */
+        }
+        .screen.active {
+            display: flex;
+        }
+        /* Estilos de botones */
+        .button {
+            background-color: #38b2ac;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            max-width: 250px;
+            margin-top: 16px;
+            box-shadow: 0 4px 10px rgba(56, 178, 172, 0.3);
+        }
+        .button:hover {
+            background-color: #319795;
+        }
+        /* Estilos específicos para las tarjetas de bienvenida */
+        .welcome-card-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 360px; /* Ajustado para que las dos tarjetas quepan bien en una fila */
+            margin-top: 20px;
+        }
+        .welcome-action-card {
+            background-color: #e0f2f2; /* Aqua muy claro */
+            border: 1px solid #b2f5ea; /* Borde más suave */
+            border-radius: 12px;
+            padding: 20px;
+            width: 160px; /* Ancho fijo para las tarjetas */
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(56, 178, 172, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .welcome-action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(56, 178, 172, 0.25);
+        }
+        .welcome-action-card h3 {
+            font-weight: 600;
+            color: #2c7a7b; /* Aqua oscuro */
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        .welcome-action-card p {
+            font-size: 0.85rem;
+            color: #4a5568;
+            margin-bottom: 15px;
+            flex-grow: 1; /* Permite que el párrafo ocupe el espacio restante */
+        }
+        .welcome-action-card .button {
+            width: auto; /* El botón solo ocupará el ancho necesario */
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            margin-top: auto; /* Empuja el botón hacia abajo */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <!-- Icono de menú (hamburguesa) -->
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+            </button>
+            <span id="headerTitle">Bienvenido</span>
+        </div>
+
+        <!-- Menú lateral (Sidebar) -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header-menu">Menú del Paciente</div>
+            <!-- Enlaces modificados para apuntar a las URLs correctas -->
+            <a href="/" class="sidebar-nav-item active-menu-item">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125h9.75a1.125 1.125 0 0 0 1.125-1.125V9.75M8.25 21.75h7.5" />
+                </svg>
+                Inicio
+            </a>
+            <a href="/cita/create" class="sidebar-nav-item">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+                Reservar Cita
+            </a>
+            <a href="/cita" class="sidebar-nav-item">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12v-.008ZM12 18h.008v.008H12v-.008Z" />
+                </svg>
+                Mis Citas
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                </svg>
+                Mi Perfil
+            </a>
+            <a href="#" class="sidebar-nav-item mt-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15M12 9l3 3m0 0l-3 3m3-3H2.25" />
+                </svg>
+                Cerrar Sesión
+            </a>
+        </nav>
+
+        <!-- Overlay para cerrar el menú al hacer clic fuera -->
+        <div class="overlay" id="overlay"></div>
+
+        <!-- Pantalla de Inicio (Dashboard) -->
+        <div id="homeScreen" class="screen active">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Bienvenido al Sistema de Citas Médicas</h2>
+            <div class="welcome-card-grid">
+                <div class="welcome-action-card">
+                    <h3>Reservar Cita</h3>
+                    <p>Agenda una nueva cita médica con nuestros especialistas.</p>
+                    <!-- Enlace del botón actualizado -->
+                    <a href="/cita/create" class="button">Reservar ahora</a>
+                </div>
+                <div class="welcome-action-card">
+                    <h3>Mis Citas</h3>
+                    <p>Consulta y administra tus citas programadas.</p>
+                    <!-- Enlace del botón actualizado -->
+                    <a href="/cita" class="button">Ver citas</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        // Abre o cierra el menú lateral
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        // Event listener para el botón de hamburguesa
+        sidebarToggle.addEventListener('click', toggleSidebar);
+
+        // Event listener para el overlay (cerrar el menú al hacer clic fuera)
+        overlay.addEventListener('click', toggleSidebar);
+    </script>
+</body>
+</html>
