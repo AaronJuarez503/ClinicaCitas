@@ -9,8 +9,8 @@
     <style>
         /* Definición de variables CSS para la paleta de colores */
         :root {
-            --primary-blue: #0effe3;
-            --light-blue: #a7fff2;
+            --primary-blue: #00fff2;
+            --light-blue: #98faff;
             --soft-blue: #e8f5ff;
             --dark-gray: #343A40;
             --medium-gray: #6C757D;
@@ -19,7 +19,7 @@
             --off-white: #F8F9FA;
             --success-green: #28A745;
             --danger-red: #DC3545;
-            --gradient-blue-to-light: linear-gradient(135deg, #007bff, #00c6ff);
+            --gradient-blue-to-light: linear-gradient(135deg, #70f5f1, #00cfb3);
         }
 
         /* Estilos globales y de cuerpo */
@@ -122,9 +122,14 @@
             resize: vertical;
         }
 
-        /* Estilo para los campos que ocupan todo el ancho */
+        /* Estilo para los campos que ocupan todo el ancho, ahora solo para el estado */
         .section-full-width {
             grid-column: 1 / 3;
+        }
+        
+        /* Estilo para el campo de motivo */
+        #motivo-section {
+            grid-column: 1 / 2; /* Ocupa solo la primera columna */
         }
 
         /* Contenedor de los botones */
@@ -180,6 +185,9 @@
             .main-title {
                 font-size: 2rem;
             }
+            .section-full-width, #motivo-section {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -222,7 +230,7 @@
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></div>
                     </div>
                     
-                    <div class="form-section section-full-width">
+                    <div class="form-section">
                         <label for="motivo" class="form-label">Motivo</label>
                         <textarea class="form-control" th:field="*{motivo}" id="motivo" rows="3" placeholder="Describa el motivo de la cita"></textarea>
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('motivo')}" th:errors="*{motivo}"></div>
