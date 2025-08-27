@@ -1,54 +1,32 @@
 package org.esfe.modelos;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
-@Entity
-@Table(name = "usuario")
-public class Usuario {
+import java.util.LinkedList;
+import java.util.List;
 
+@Entity
+@Table(name = "usuarios2")
+public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "nombre_usuario", unique = true, nullable = false)
     @NotBlank(message = "El nombre de usuario es requerido")
-    private String nombreUsuario;
+    private String login;
 
-    @Column(name = "contraseña_hash", nullable = false)
     @NotBlank(message = "La contraseña es requerida")
-    private String contraseñaHash;
+    private String clave;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Rol rol;
+    private int status;
 
-    @ManyToOne
-    @JoinColumn(name = "id_medico", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_usuario_medico"))
-    private Medico medico;
-
-    @ManyToOne
-    @JoinColumn(name = "id_paciente", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_usuario_paciente"))
-    private Paciente paciente;
-
-    // Enum para el campo rol
-    public enum Rol {
-        medico,
-        paciente
-    }
-
-    // Getters y Setters
-
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "usuario_rol",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "rol_id"))
+    private List<Rol> roles;
+    
     public Integer getId() {
         return id;
     }
@@ -57,43 +35,43 @@ public class Usuario {
         this.id = id;
     }
 
-    public String getNombreUsuario() {
-        return nombreUsuario;
+    public String getLogin() {
+        return login;
     }
 
-    public void setNombreUsuario(String nombreUsuario) {
-        this.nombreUsuario = nombreUsuario;
+    public void setLogin(String login) {
+        this.login = login;
     }
 
-    public String getContraseñaHash() {
-        return contraseñaHash;
+    public String getClave() {
+        return clave;
     }
 
-    public void setContraseñaHash(String contraseñaHash) {
-        this.contraseñaHash = contraseñaHash;
+    public void setClave(String clave) {
+        this.clave = clave;
     }
 
-    public Rol getRol() {
-        return rol;
+    public int getStatus() {
+        return status;
     }
 
-    public void setRol(Rol rol) {
-        this.rol = rol;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
-    public Medico getMedico() {
-        return medico;
+    public List<Rol> getRoles() {
+        return roles;
     }
 
-    public void setMedico(Medico medico) {
-        this.medico = medico;
+    public void setRoles(List<Rol> roles) {
+        this.roles = roles;
     }
 
-    public Paciente getPaciente() {
-        return paciente;
-    }
-
-    public void setPaciente(Paciente paciente) {
-        this.paciente = paciente;
+    // Método para agregar roles
+    public void agregar(Rol tempRol) {
+        if (roles == null) {
+            roles = new LinkedList<>();
+        }
+        roles.add(tempRol);
     }
 }
