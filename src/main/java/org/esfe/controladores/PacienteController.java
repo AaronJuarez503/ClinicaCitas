@@ -32,6 +32,12 @@ public class PacienteController {
     private IPacienteService pacienteService; // Inyección del servicio de paciente
 
     // Muestra el listado paginado de pacientes
+       @GetMapping("/vistaPaciente")
+    public String vistaPaciente() {
+        // Esto le dice a Thymeleaf que busque la plantilla en src/main/resources/templates/paciente/vistaP.html
+        return "paciente/vistaP";
+    }
+
     @GetMapping
     public String index(Model model, @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
         int currentPage = page.orElse(1) - 1; // Página actual (0-indexed para Spring Data JPA)
