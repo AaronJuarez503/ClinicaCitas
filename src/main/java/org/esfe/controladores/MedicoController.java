@@ -5,10 +5,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.esfe.modelos.Medico;
-import org.esfe.modelos.Clinica; // Importar el modelo Clinica si se usa en el formulario
-import org.esfe.servicios.interfaces.IMedicoService;
-import org.esfe.servicios.interfaces.IClinicaService; // Asumiendo que tienes un servicio para Clinica
+import org.esfe.modelos.Clinica;
+import org.esfe.modelos.Medico; // Importar el modelo Clinica si se usa en el formulario
+import org.esfe.servicios.interfaces.IClinicaService;
+import org.esfe.servicios.interfaces.IMedicoService; // Asumiendo que tienes un servicio para Clinica
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,6 +39,12 @@ public class MedicoController {
     private IClinicaService clinicaService; // Inyección del servicio de Clinica para el dropdown en el formulario de médico
 
     // Muestra el listado paginado de médicos
+     @GetMapping("/vistaMedico")
+    public String vistaMedico() {
+        // Esto le dice a Thymeleaf que busque la plantilla en src/main/resources/templates/medico/vistaM.html
+        return "medico/vistaM"; 
+    }
+    
     @GetMapping
     public String index(Model model, @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
         int currentPage = page.orElse(1) - 1; // Página actual (0-indexed para Spring Data JPA)
