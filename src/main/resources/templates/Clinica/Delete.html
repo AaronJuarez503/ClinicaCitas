@@ -4,7 +4,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/_mainLayout}">
 <head>
-    <title>Eliminar Clínica</title>
+    <title>Eliminar Cita</title>
     <style>
         /* Definición de variables CSS para la paleta de colores */
         :root {
@@ -75,8 +75,8 @@
             padding-top: 0.5rem; /* Pequeño padding superior dentro del card */
         }
 
-        /* Estilo para el "card" que contiene los detalles de la clínica */
-        .clinica-details-card {
+        /* Estilo para el "card" que contiene los detalles de la cita */
+        .cita-details-card {
             background-image: var(--delete-gradient-background); /* Aplica el gradiente */
             padding: 1.5rem;
             border-radius: 0.75rem;
@@ -86,20 +86,44 @@
             border: 1px solid rgba(0,0,0,0.1);
         }
 
-        .clinica-details-card hr {
+        .cita-details-card hr {
             border-top: 1px solid rgba(0, 0, 0, 0.1);
             margin-top: 1rem;
             margin-bottom: 1rem;
         }
 
-        .clinica-details-card dl.row {
-            margin-bottom: 1rem;
+        /* Contenedor para los detalles de la cita con layout de grid */
+        .appointment-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Ajusta columnas automáticamente */
+            gap: 1rem; /* Espacio entre los elementos de la cuadrícula */
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
         }
 
-        .clinica-details-card dt {
-            font-weight: 600;
-            color: var(--medium-gray);
+        .appointment-detail-item {
+            background-color: rgba(255, 255, 255, 0.7); /* Fondo semi-transparente para cada detalle */
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            text-align: left;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0,0,0,0.05);
         }
+
+        .appointment-detail-item dt {
+            font-weight: 600;
+            color: var(--dark-gray); /* Color para la etiqueta del detalle */
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+
+        .appointment-detail-item dd {
+            color: var(--medium-gray); /* Color para el valor del detalle */
+            font-size: 1rem;
+            line-height: 1.2;
+            word-break: break-word; /* Para manejar textos largos */
+        }
+
 
         /* Estilo para el botón de eliminación personalizado */
         .btn-delete-custom {
@@ -144,6 +168,20 @@
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
+        /* Mensaje de advertencia específico */
+        .warning-message {
+            color: var(--danger-red);
+            font-size: 0.9rem;
+            margin-top: -0.5rem; /* Ajuste para acercarlo a los detalles */
+            margin-bottom: 1.5rem; /* Espacio antes de los botones */
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(220, 53, 69, 0.3); /* Borde suave */
+            background-color: rgba(220, 53, 69, 0.05); /* Fondo muy claro */
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+
+
         /* Estilos responsivos */
         @media (max-width: 768px) {
             .delete-page-container {
@@ -162,8 +200,11 @@
                 font-size: 1.1rem;
                 margin-bottom: 0.75rem;
             }
-            .clinica-details-card {
+            .cita-details-card { /* Aplicar también a la tarjeta de cita */
                 padding: 1rem;
+            }
+            .appointment-info-grid {
+                grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
             }
             .btn-delete-custom, .btn-back {
                 width: calc(100% - 1rem); /* Ajusta el ancho para el padding */
@@ -181,32 +222,73 @@
 <body>
     <div layout:fragment="content">
         <div class="delete-page-container">
-            <h1 class="main-title">Eliminar Clínica</h1>
+            <h1 class="main-title">Eliminar Cita</h1>
             
-            <div class="clinica-details-card">
-                <h3 class="confirmation-message">¿Estás seguro de que deseas eliminar esta clínica?</h3>
+            <div class="cita-details-card">
+                <h3 class="confirmation-message">¿Estás seguro de que deseas eliminar esta cita?</h3>
                 <hr />
-                <dl class="row">
-                    <dt class="col-sm-2">ID</dt>
-                    <dd class="col-sm-10" th:text="${clinica.id}"></dd>
+                
+                <!-- Nueva sección para mostrar la información de la cita en un formato de cuadrícula -->
+                <div class="appointment-info-grid">
+                    <div class="appointment-detail-item">
+                        <dt>ID de Cita:</dt>
+                        <dd th:text="${cita.id}"></dd>
+                    </div>
+                    <div class="appointment-detail-item">
+                        <dt>Paciente:</dt>
+                        <dd th:text="${cita.paciente?.nombre}"></dd>
+                    </div>
+                    <div class="appointment-detail-item">
+                        <dt>Médico:</dt>
+                        <dd th:text="${cita.medico?.nombre}"></dd>
+                    </div>
+                    <div class="appointment-detail-item">
+                        <dt>Especialidad:</dt>
+                        <dd th:text="${cita.medico?.especialidad}"></dd>
+                    </div>
+                    <div class="appointment-detail-item">
+                        <dt>Fecha:</dt>
+                        <dd th:text="${cita.fecha}"></dd>
+                    </div>
+                    <div class="appointment-detail-item">
+                        <dt>Hora:</dt>
+                        <dd th:text="${cita.hora}"></dd>
+                    </div>
+                    <div class="appointment-detail-item">
+                        <dt>Estado Actual:</dt>
+                        <dd th:text="${cita.estado}"></dd>
+                    </div>
+                </div>
 
-                    <dt class="col-sm-2">Nombre</dt>
-                    <dd class="col-sm-10" th:text="${clinica.nombre}"></dd>
+                <!-- Mensaje de advertencia específico -->
+                <p class="warning-message">Esta acción eliminará la cita de forma permanente y no se podrá deshacer.</p>
 
-                    <dt class="col-sm-2">Dirección</dt>
-                    <dd class="col-sm-10" th:text="${clinica.direccion}"></dd>
-
-                    <dt class="col-sm-2">Teléfono</dt>
-                    <dd class="col-sm-10" th:text="${clinica.telefono}"></dd>
-                </dl>
-
-                <form th:action="@{/clinica/delete}" method="post">
-                    <input type="hidden" name="Id" th:value="${clinica.id}">
-                    <input type="submit" value="Eliminar" class="btn-delete-custom">
-                    <a th:href="@{/clinica}" class="btn-back">Regresar</a>
+                <form th:action="@{/cita/delete/{id}(id=${cita.id})}" method="post">
+                    <input type="hidden" name="Id" th:value="${cita.id}">
+                    <button type="submit" class="btn-delete-custom">Eliminar</button>
+                    <a th:href="@{/cita}" class="btn-back">Regresar</a>
                 </form>
             </div>
         </div>
     </div>
+
+    <!-- Script para animación de entrada -->
+    <th:block layout:fragment="script">
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const card = document.querySelector('.cita-details-card'); // Seleccionar la nueva clase de tarjeta
+                if (card) { // Asegurarse de que la tarjeta exista
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'all 0.3s ease-out';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }
+            });
+        </script>
+    </th:block>
 </body>
 </html>
