@@ -43,7 +43,7 @@ public class DatabaseWebSecurity {
                 .requestMatchers("/paciente/**").hasAnyAuthority("medico")
                 .requestMatchers("/cita/**").hasAnyAuthority("medico", "paciente")
 
-                
+
                 // todas las demás vistas requieren autenticación
                 .anyRequest().authenticated());
         http.formLogin(form -> form.loginPage("/login").permitAll());
