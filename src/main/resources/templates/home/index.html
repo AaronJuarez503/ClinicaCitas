@@ -161,7 +161,7 @@
 </head>
 <body>
     <div layout:fragment="content">
-        <div class="warning-container">
+        <div sec:authorize="isAnonymous()" class="warning-container">
             <h1 class="main-title">Acceso Requerido</h1>
             <div class="warning-content">
                 <!-- Icono de Candado (SVG) -->
