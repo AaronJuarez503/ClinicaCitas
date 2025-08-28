@@ -1,29 +1,217 @@
-<html lang="en"
-    xmlns="http://thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="/layouts/_mainLayout.html">
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/_mainLayout}">
+<head>
+    <title>Detalles de Clínica</title>
+    <!-- CSS personalizado para los estilos del formulario y detalles -->
+    <style>
+        /* Definición de variables CSS para la paleta de colores */
+        :root {
+            --primary-blue: #00fff2;
+            --light-blue: #98faff;
+            --soft-blue: #e8f5ff;
+            --dark-gray: #343A40;
+            --medium-gray: #6C757D;
+            --light-gray: #E9ECEF;
+            --white: #FFFFFF;
+            --off-white: #F8F9FA;
+            --success-green: #28A745;
+            --danger-red: #DC3545;
+            --gradient-blue-to-light: linear-gradient(135deg, #70f5f1, #00cfb3);
+        }
 
-<div layout:fragment="content">
+        /* Estilos globales y de cuerpo */
+        body {
+            background-color: var(--white);
+            font-family: 'Inter', Arial, sans-serif;
+            color: var(--dark-gray);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
 
-     <h1>Detalles de clinica</h1>
-    <div>
-        <hr />
-        <dl class="row">
-            <dt class = "col-sm-2" >ID</dt>
-            <dd class = "col-sm-10" th:text="${clinica.id}"></dd>
+        /* Contenedor principal del formulario (reutilizado para detalles) */
+        .form-container { /* Usaremos esta clase para el contenedor de los detalles */
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            max-width: 850px; /* Ancho ajustado aquí a 850px */
+            width: 100%;
+        }
 
-            <dt class = "col-sm-2">Nombre</dt>
-            <dd class = "col-sm-10" th:text="${clinica.nombre}"></dd>
+        /* Estilo para el título principal con gradiente */
+        .main-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--white);
+            background-image: var(--gradient-blue-to-light);
+            padding: 1rem 1.5rem;
+            margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
 
-            <dt class = "col-sm-2">Direccion</dt>
-            <dd class = "col-sm-10" th:text="${clinica.direccion}"></dd>
+        /* Estilos para los campos de detalle */
+        .detail-section {
+            margin-bottom: 1rem;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+            display: block; /* Para que la etiqueta esté en su propia línea */
+        }
+        .detail-value {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem; /* Un poco más grande para mejor lectura */
+            border: 1px solid var(--light-gray); /* Borde suave para el valor */
+            border-radius: 0.5rem;
+            background-color: var(--off-white); /* Fondo ligeramente diferente */
+            color: var(--dark-gray);
+            display: block; /* Ocupa todo el ancho disponible */
+            word-wrap: break-word; /* Para URLs largas */
+        }
+        .detail-value.map-link {
+            text-align: center;
+            font-weight: 700;
+            color: var(--white);
+            background-color: #38b2ac; /* Color del botón principal */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-decoration: none; /* Quitar subrayado del enlace */
+        }
+        .detail-value.map-link:hover {
+            background-color: #319795; /* Tono más oscuro al pasar el ratón */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(56, 178, 172, 0.3);
+        }
 
-            <dt class = "col-sm-2">Telefono</dt>
-            <dd class = "col-sm-10" th:text="${clinica.telefono}"></dd>
-        </dl>
+        /* Contenedor de los botones de acción */
+        .form-actions { /* Reutilizado para botones de detalle */
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
 
-        <a th:href="@{/clinica/edit/{id} (id = ${clinica.id}) }" class="btn btn-outline-info">Editar</a> |
-        <a th:href="@{/clinica}">Regresar</a>
+        /* Estilos para los botones (ya definidos en tu CSS) */
+        .btn {
+            padding: 0.6rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .btn-primary {
+            background-color: #00cfb3;
+            color: var(--white);
+        }
+        .btn-primary:hover {
+            background-color: #00a89a;
+        }
+        .btn-secondary {
+            background-color: var(--medium-gray);
+            color: var(--white);
+        }
+        .btn-secondary:hover {
+            background-color: var(--dark-gray);
+        }
+        .btn-info { /* Añadido estilo para el botón de editar */
+            background-color: #4299e1; /* Azul */
+            color: var(--white);
+        }
+        .btn-info:hover {
+            background-color: #3182ce;
+        }
+
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 1rem;
+                max-width: 100%;
+            }
+            .main-title {
+                font-size: 1.5rem;
+                padding: 0.8rem 1rem;
+                margin: -1rem -1rem 1rem -1rem;
+            }
+            .form-actions {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="form-container">
+            <h1 class="main-title">Detalles de la Clínica</h1>
+
+            <div class="detail-section">
+                <label class="detail-label">ID:</label>
+                <span class="detail-value" th:text="${clinica.id}"></span>
+            </div>
+
+            <div class="detail-section">
+                <label class="detail-label">Nombre:</label>
+                <span class="detail-value" th:text="${clinica.nombre}"></span>
+            </div>
+
+            <div class="detail-section">
+                <label class="detail-label">Dirección:</label>
+                <span class="detail-value" th:text="${clinica.direccion}"></span>
+            </div>
+
+            <div class="detail-section">
+                <label class="detail-label">Teléfono:</label>
+                <span class="detail-value" th:text="${clinica.telefono}"></span>
+            </div>
+
+            <!-- Nuevo: Enlace de Ubicación a Google Maps -->
+            <div class="detail-section">
+                <label class="detail-label">Ubicación:</label>
+                <a th:if="${clinica.ubicacionUrl != null and clinica.ubicacionUrl != ''}"
+                   th:href="${clinica.ubicacionUrl}" target="_blank"
+                   class="detail-value map-link">
+                    Ver Mapa
+                </a>
+                <span th:unless="${clinica.ubicacionUrl != null and clinica.ubicacionUrl != ''}"
+                      class="detail-value">
+                    Ubicación no disponible
+                </span>
+            </div>
+
+            <div class="form-actions">
+                <!-- Botón Editar ahora usa el estilo btn-info -->
+                <a th:href="@{/clinica/edit/{id}(id=${clinica.id})}" class="btn btn-info">Editar</a>
+                <!-- El botón Regresar ahora usa el estilo btn-secondary -->
+                <a th:href="@{/clinica}" class="btn btn-secondary">Regresar</a>
+            </div>
+        </div>
     </div>
-
-</div>
+</body>
+</html>
