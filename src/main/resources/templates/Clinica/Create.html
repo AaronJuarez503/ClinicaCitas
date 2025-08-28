@@ -232,6 +232,13 @@
                                pattern="[0-9]{4}-[0-9]{4}" placeholder="0000-0000" required>
                         <div class="text-danger" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></div>
                     </div>
+
+                    <!-- Nuevo Campo Ubicación (Google Maps URL) -->
+                    <div class="form-section section-full-width">
+                        <label for="ubicacionUrl" class="form-label">Ubicación (Google Maps URL)</label>
+                        <input type="url" class="form-control" th:field="*{ubicacionUrl}" id="ubicacionUrl" placeholder="Ej: https://maps.app.goo.gl/abcdefg" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('ubicacionUrl')}" th:errors="*{ubicacionUrl}"></div>
+                    </div>
                 </div>
 
                 <!-- Botones de acción -->
