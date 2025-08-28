@@ -4,4 +4,9 @@ layout:decorate="/layouts/_mainLayout.html">
 
 <div layout:fragment="content">
     
-    <h1>Hola, Bienvenidos, esta es la pagina principal para el inicio</h1>
+    <h1 style="text-align: center;">Hola, Bienvenidos, esta es la pagina principal para el inicio</h1>
+     <div sec:authorize="isAnonymous()" style="text-align: center; background-color: rgb(224, 84, 84); font-size: 30px; color: aliceblue;" role="alert">
+        Debes iniciar sesión para poder utilizar la aplicación.
+    </div>
+
+</div>

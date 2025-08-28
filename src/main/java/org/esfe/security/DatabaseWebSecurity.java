@@ -32,9 +32,17 @@ public class DatabaseWebSecurity {
                 .requestMatchers("/assets/**", "/css/**", "/js/**").permitAll()
                 // las vistas públicas no requieren autenticación
                 .requestMatchers("/", "/privacy", "/terms").permitAll()
+
+                // Asignar permisos a URLs por ROLES
+                .requestMatchers("/clinica/**").hasAnyAuthority("medico", "paciente")
+                .requestMatchers("/medico/**").hasAnyAuthority("paciente")
+                .requestMatchers("/paciente/**").hasAnyAuthority("medico")
+                .requestMatchers("/cita/**").hasAnyAuthority("medico", "paciente")
+
+                
                 // todas las demás vistas requieren autenticación
                 .anyRequest().authenticated());
-        http.formLogin(form -> form.permitAll());
+        http.formLogin(form -> form.loginPage("/login").permitAll());
 
         return http.build();
     }

@@ -36,16 +36,68 @@
                     <span class="sidebar-title">Citas Clínicas</span>
                 </div>
                 <div class="list-group list-group-flush">
-                    <a th:href="@{/}" class="list-group-item"><i class="fas fa-home"></i> Inicio</a>
-                    <a th:href="@{/usuario/perfil}" class="list-group-item"><i class="fas fa-user"></i> Mi Perfil</a>
-                   <a th:href="@{/medico/vistaMedico}" class="list-group-item"><i class="fas fa-stethoscope"></i> Vista Médico</a>
-                    <a th:href="@{/paciente/vistaPaciente}" class="list-group-item"><i class="fas fa-procedures"></i> Vista Paciente</a>
-                    <a th:href="@{/cita/create}" class="list-group-item"><i class="fas fa-calendar-plus"></i> Reservar Cita</a>
-                    <a th:href="@{/cita}" class="list-group-item"><i class="fas fa-calendar-alt"></i> Ver Citas</a>
-                    <a th:href="@{/clinica}" class="list-group-item"><i class="fas fa-hospital"></i> Ver Clínicas</a>
-                    <a th:href="@{/medico}" class="list-group-item"><i class="fas fa-user-md"></i> Ver Médicos</a>
-                    <a th:href="@{/paciente}" class="list-group-item"><i class="fas fa-users"></i> Ver Pacientes</a>
-                    <a th:href="@{/logout}" class="list-group-item sidebar-settings-item"><i class="fas fa-cog"></i> Cerrar Secion</a>
+
+                  <div sec:authorize="isAuthenticated()">
+
+                        <a th:href="@{/}" class="list-group-item">
+                            <i class="fas fa-home"></i> Inicio
+                        </a>
+
+                        <a th:href="@{/usuario/perfil}" class="list-group-item">
+                            <i class="fas fa-user"></i> Mi Perfil
+                        </a>
+
+                        <!-- Solo Médico puede ver esta vista -->
+                        <a th:href="@{/medico/vistaMedico}" class="list-group-item"
+                        sec:authorize="hasAuthority('medico')">
+                            <i class="fas fa-stethoscope"></i> Vista Médico
+                        </a>
+
+                        <!-- Solo Paciente puede ver esta vista -->
+                        <a th:href="@{/paciente/vistaPaciente}" class="list-group-item"
+                        sec:authorize="hasAuthority('paciente')">
+                            <i class="fas fa-procedures"></i> Vista Paciente
+                        </a>
+
+                        <!-- Médicos y Pacientes pueden reservar citas -->
+                        <a th:href="@{/cita/create}" class="list-group-item"
+                        sec:authorize="hasAnyAuthority('paciente')">
+                            <i class="fas fa-calendar-plus"></i> Reservar Cita
+                        </a>
+
+                        <!-- Médicos y Pacientes pueden ver citas -->
+                        <a th:href="@{/cita}" class="list-group-item"
+                        sec:authorize="hasAnyAuthority('medico','paciente')">
+                            <i class="fas fa-calendar-alt"></i> Ver Citas
+                        </a>
+
+                        <!-- Médicos y Pacientes pueden ver clínicas -->
+                        <a th:href="@{/clinica}" class="list-group-item"
+                        sec:authorize="hasAnyAuthority('medico','paciente')">
+                            <i class="fas fa-hospital"></i> Ver Clínicas
+                        </a>
+
+                        <!-- Solo Paciente puede ver listado de médicos -->
+                        <a th:href="@{/medico}" class="list-group-item"
+                        sec:authorize="hasAuthority('paciente')">
+                            <i class="fas fa-user-md"></i> Ver Médicos
+                        </a>
+
+                        <!-- Solo Médico puede ver listado de pacientes -->
+                        <a th:href="@{/paciente}" class="list-group-item"
+                        sec:authorize="hasAuthority('medico')">
+                            <i class="fas fa-users"></i> Ver Pacientes
+                        </a>
+
+                        <a th:href="@{/logout}" class="list-group-item sidebar-settings-item">
+                            <i class="fas fa-cog"></i> Cerrar Sesión
+                        </a>
+
+                    </div>
+
+                    <div sec:authorize="isAnonymous()"      >
+                        <a th:href="@{/login}" class="list-group-item sidebar-settings-item"><i class="fas fa-cog"></i> Iniciar Secion</a>
+                    </div>
                 </div>
             </div>
             <!-- /#sidebar-wrapper -->
