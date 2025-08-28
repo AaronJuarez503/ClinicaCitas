@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Yinka Enoch Adedokun">
     <title>Login</title>
 
-    <!-- Font Awesome para los iconos (ej. el de Android, y el ojo para la contraseña) -->
+    <!-- Font Awesome para los iconos (ej. el de Android) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Enlace a la fuente Inter de Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -26,7 +27,7 @@
             --gradient-blue-to-light: linear-gradient(135deg, #70f5f1, #00cfb3);
             --shadow-strong: 0 15px 30px rgba(0, 0, 0, 0.2);
             --shadow-light: 0 5px 15px rgba(0, 0, 0, 0.08);
-            --light-gray-icon: #A0A0A0; /* Nuevo color para el icono del ojo */
+            --light-gray-icon: #A0A0A0;
         }
 
         /* Estilos globales y de cuerpo */
@@ -37,11 +38,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh; /* Asegura que el body ocupe el 100% de la altura de la ventana */
+            min-height: 100vh;
             margin: 0;
             padding: 1rem;
             box-sizing: border-box;
-            flex-direction: column; /* Para centrar también el footer */
+            flex-direction: column;
         }
 
         /* Contenedor principal del formulario de login */
@@ -49,12 +50,12 @@
             background-color: var(--white);
             border-radius: 1.5rem;
             box-shadow: var(--shadow-strong);
-            max-width: 900px; /* Ajusta el ancho máximo para la vista de dos columnas */
+            max-width: 900px;
             width: 100%;
             overflow: hidden;
-            display: flex; /* Para las dos columnas */
+            display: flex;
             animation: fadeInScale 0.5s ease-out forwards;
-            min-height: 450px; /* Altura mínima para que no se vea aplastado */
+            min-height: 450px;
         }
 
         /* Estilos para la sección de información de la compañía (lado izquierdo) */
@@ -69,12 +70,12 @@
             gap: 1rem;
             border-top-left-radius: 1.5rem;
             border-bottom-left-radius: 1.5rem;
-            flex: 1; /* Permite que ocupe espacio flexible */
-            min-width: 250px; /* Anchura mínima para evitar que se comprima demasiado */
+            flex: 1;
+            min-width: 250px;
         }
 
         .company__logo h2 {
-            font-size: 4rem; /* Icono más grande */
+            font-size: 4rem;
             margin: 0;
         }
 
@@ -93,8 +94,8 @@
             justify-content: center;
             border-top-right-radius: 1.5rem;
             border-bottom-right-radius: 1.5rem;
-            flex: 2; /* Ocupa el doble de espacio que company__info */
-            min-width: 300px; /* Anchura mínima para el formulario */
+            flex: 2;
+            min-width: 300px;
         }
 
         .login_form h2 {
@@ -109,7 +110,7 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem; /* Espacio entre los campos del formulario */
+            gap: 1.5rem;
         }
 
         /* Contenedor para el campo de contraseña y el icono */
@@ -126,7 +127,7 @@
             font-size: 1rem;
             color: var(--dark-gray);
             transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-            box-sizing: border-box; /* Asegura que el padding no desborde */
+            box-sizing: border-box;
         }
 
         .form__input::placeholder {
@@ -142,11 +143,11 @@
         /* Estilo para el icono de ver/ocultar contraseña */
         .toggle-password {
             position: absolute;
-            right: 15px; /* Ajusta la posición a la derecha */
+            right: 15px;
             top: 50%;
             transform: translateY(-50%);
             cursor: pointer;
-            color: var(--light-gray-icon); /* Cambiado a un gris más claro */
+            color: var(--light-gray-icon);
             font-size: 1.1rem;
             transition: color 0.2s ease-in-out;
         }
@@ -158,7 +159,7 @@
         /* Estilo para el botón de submit */
         .btn {
             display: inline-block;
-            width: 100%; /* El botón ocupa todo el ancho */
+            width: 100%;
             padding: 0.8rem 2rem;
             font-size: 1.1rem;
             font-weight: 700;
@@ -194,7 +195,7 @@
         }
 
         .login_form p a:hover {
-            color: #00b8aa; /* Un tono un poco más oscuro al pasar el ratón */
+            color: #00b8aa;
             text-decoration: underline;
         }
 
@@ -203,7 +204,7 @@
             margin-top: 2rem;
             font-size: 0.85rem;
             color: var(--medium-gray);
-            text-align: center; /* Asegura que el footer esté centrado */
+            text-align: center;
         }
 
         .footer a {
@@ -231,26 +232,26 @@
         /* Estilos responsivos */
         @media (max-width: 768px) {
             .main-content {
-                flex-direction: column; /* Las columnas se apilan en pantallas pequeñas */
+                flex-direction: column;
                 border-radius: 1rem;
-                min-height: unset; /* Quita la altura mínima fija */
+                min-height: unset;
             }
 
             .company__info {
                 border-top-left-radius: 1rem;
                 border-top-right-radius: 1rem;
-                border-bottom-left-radius: 0; /* Reinicia el borde inferior izquierdo */
+                border-bottom-left-radius: 0;
                 padding: 1.5rem;
                 text-align: center;
-                min-width: unset; /* Quita el min-width */
+                min-width: unset;
             }
 
             .login_form {
-                border-top-right-radius: 0; /* Reinicia el borde superior derecho */
-                border-bottom-left-radius: 1rem; /* Borde para la parte inferior en móviles */
+                border-top-right-radius: 0;
+                border-bottom-left-radius: 1rem;
                 border-bottom-right-radius: 1rem;
                 padding: 1.5rem;
-                min-width: unset; /* Quita el min-width */
+                min-width: unset;
             }
 
             .company__logo h2 {
@@ -301,12 +302,10 @@
     </style>
 </head>
 <body>
-    <!-- Main Content -->
     <div class="main-content">
         <div class="company__info">
            <span class="company__logo">
                 <h2>
-                    <!-- Aquí va el logo SVG -->
                     <svg width="4rem" height="4rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-activity">
                         <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
                         <path d="M2 17l10 5 10-5"></path>
@@ -318,28 +317,28 @@
         </div>
         <div class="login_form">
             <h2>Iniciar Sesión</h2>
-            <form th:action="@{/login}" method="post" class="form-group" id="loginForm">
+            <form action="/login" method="post" class="form-group" id="loginForm"><input type="hidden" name="_csrf" value="wpen39VIuWCSPwcqIBUhqSnnhd6IZEAr8P_pjSMu3IKyH6Je8aeU6OUqjla_WWMbRjgVnkvUqOfpViMGyZqKtBUa5bqHKpRv"/>
                 <div>
                     <input type="text" name="username" id="username" class="form__input" placeholder="Usuario">
                 </div>
                 <div class="password-container">
                     <input type="password" name="password" id="password" class="form__input" placeholder="Contraseña">
                     <span class="toggle-password" id="togglePassword">
-                        <i class="fas fa-eye"></i> <!-- Icono de ojo para mostrar -->
+                        <i class="fas fa-eye"></i>
                     </span>
                 </div>
-                <div id="messageBox" class="message-box"></div> <!-- Caja de mensajes -->
+                <div id="messageBox" class="message-box"></div>
                 <div>
                     <input type="submit" value="Acceder" class="btn">
                 </div>
             </form>
-            <p>¿No tienes una cuenta? <a href="/register">Regístrate Aquí</a></p>
+            <p>¿No tienes una cuenta? <a href="/usuarios/create">Regístrate Aquí</a></p>
         </div>
     </div>
-    <!-- Footer -->
     <div class="footer">
-        <p>Codificado con &hearts; </a>Amor</p>
+        <p>Codificado con &hearts; Amor</p>
     </div>
+
 
 </body>
 </html>
