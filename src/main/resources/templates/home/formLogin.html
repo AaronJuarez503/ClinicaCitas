@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" >
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login</title>
 
-    <!-- Font Awesome para los iconos (ej. el de Android) -->
+    <!-- Font Awesome para los iconos (ej. el de Android, y el ojo para la contraseña) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Enlace a la fuente Inter de Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -26,7 +26,7 @@
             --gradient-blue-to-light: linear-gradient(135deg, #70f5f1, #00cfb3);
             --shadow-strong: 0 15px 30px rgba(0, 0, 0, 0.2);
             --shadow-light: 0 5px 15px rgba(0, 0, 0, 0.08);
-            /* --light-gray-icon: #A0A0A0; Este color no estaba en esta versión */
+            --light-gray-icon: #A0A0A0; /* Nuevo color para el icono del ojo */
         }
 
         /* Estilos globales y de cuerpo */
@@ -112,6 +112,12 @@
             gap: 1.5rem; /* Espacio entre los campos del formulario */
         }
 
+        /* Contenedor para el campo de contraseña y el icono */
+        .password-container {
+            position: relative;
+            width: 100%;
+        }
+
         .form__input {
             width: 100%;
             padding: 0.8rem 1rem;
@@ -131,6 +137,22 @@
             outline: none;
             border-color: var(--primary-blue);
             box-shadow: 0 0 0 3px rgba(0, 255, 242, 0.3);
+        }
+
+        /* Estilo para el icono de ver/ocultar contraseña */
+        .toggle-password {
+            position: absolute;
+            right: 15px; /* Ajusta la posición a la derecha */
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--light-gray-icon); /* Cambiado a un gris más claro */
+            font-size: 1.1rem;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .toggle-password:hover {
+            color: var(--dark-gray);
         }
 
         /* Estilo para el botón de submit */
@@ -300,8 +322,11 @@
                 <div>
                     <input type="text" name="username" id="username" class="form__input" placeholder="Usuario">
                 </div>
-                <div>
+                <div class="password-container">
                     <input type="password" name="password" id="password" class="form__input" placeholder="Contraseña">
+                    <span class="toggle-password" id="togglePassword">
+                        <i class="fas fa-eye"></i> <!-- Icono de ojo para mostrar -->
+                    </span>
                 </div>
                 <div id="messageBox" class="message-box"></div> <!-- Caja de mensajes -->
                 <div>
@@ -322,8 +347,8 @@
             const usernameInput = document.getElementById('username');
             const passwordInput = document.getElementById('password');
             const messageBox = document.getElementById('messageBox');
-            // const togglePassword = document.getElementById('togglePassword'); // No existía en esta versión
-            // const togglePasswordIcon = togglePassword ? togglePassword.querySelector('i') : null; // No existía en esta versión
+            const togglePassword = document.getElementById('togglePassword');
+            const togglePasswordIcon = togglePassword ? togglePassword.querySelector('i') : null;
 
             // Credenciales de ejemplo (¡solo para demostración, NO SEGURAS!)
             const validUsername = 'usuario';
@@ -356,7 +381,21 @@
                 });
             }
 
-            // La lógica para mostrar/ocultar contraseña no estaba presente en esta versión.
+            // Lógica para mostrar/ocultar contraseña
+            if (togglePassword && passwordInput && togglePasswordIcon) {
+                togglePassword.addEventListener('click', function() {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+
+                    if (type === 'text') {
+                        togglePasswordIcon.classList.remove('fa-eye');
+                        togglePasswordIcon.classList.add('fa-eye-slash');
+                    } else {
+                        togglePasswordIcon.classList.remove('fa-eye-slash');
+                        togglePasswordIcon.classList.add('fa-eye');
+                    }
+                });
+            }
         });
     </script>
 </body>
