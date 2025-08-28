@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/_mainLayout}">
+<head>
+    <title>Editar Cita</title>
+    <style>
+        /* Definición de variables CSS para la paleta de colores */
+        :root {
+            --primary-blue: #00fff2;
+            --light-blue: #98faff;
+            --soft-blue: #e8f5ff;
+            --dark-gray: #343A40;
+            --medium-gray: #6C757D;
+            --light-gray: #E9ECEF;
+            --white: #FFFFFF;
+            --off-white: #F8F9FA;
+            --success-green: #28A745;
+            --danger-red: #DC3545;
+            --info-blue: #17A2B8;
+            --gradient-blue-to-light: linear-gradient(135deg, #70f5f1, #00cfb3);
+            --form-background: #f7fafc; /* Fondo para el área del formulario */
+        }
+
+        /* Estilos globales y de cuerpo, replicados para asegurar consistencia si _mainLayout no los tiene */
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            color: var(--dark-gray);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Contenedor principal para la página de edición */
+        .edit-page-container {
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px; /* Ancho máximo para el formulario */
+            margin: 2rem auto; /* Centrar y añadir margen superior */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Estilo para el título principal */
+        .main-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--white);
+            background-image: var(--gradient-blue-to-light);
+            padding: 1rem 1.5rem;
+            margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        /* Estilo para el "card" que contiene el formulario */
+        .form-card {
+            background-color: var(--form-background);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--light-gray);
+        }
+
+        /* Asegurar que los contenedores mb-3 se vean como form-group */
+        .mb-3 {
+            margin-bottom: 1.5rem !important; /* Espacio entre grupos de formulario */
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 0.5rem;
+            text-align: left;
+        }
+
+        .form-control, .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            color: var(--dark-gray);
+            transition: all 0.2s ease-in-out;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 255, 242, 0.2);
+            outline: none;
+        }
+
+        .form-select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 14px 10px;
+            padding-right: 2.5rem;
+        }
+
+        /* Estilos para el botón de guardar cambios */
+        .btn-primary-custom {
+            background-color: #00cfb3; /* Usando tu color aqua principal */
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 0.75rem;
+        }
+        .btn-primary-custom:hover {
+            background-color: #00a89a; /* Tono más oscuro al pasar el ratón */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Estilo para el botón "Cancelar" */
+        .btn-back-custom {
+            background-color: var(--medium-gray);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-back-custom:hover {
+            background-color: var(--dark-gray);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Separador horizontal */
+        hr {
+            border-top: 1px solid var(--light-gray);
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Estilos para los mensajes de error */
+        /* Ocultar por defecto, mostrar solo cuando el formulario es validado y el campo es inválido */
+        .text-danger, .invalid-feedback {
+            color: var(--danger-red);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none; /* Oculto por defecto */
+        }
+
+        /* Mostrar mensajes de error cuando el formulario tiene la clase 'was-validated' y el campo es inválido */
+        .was-validated .form-control:invalid ~ .invalid-feedback,
+        .was-validated .form-select:invalid ~ .invalid-feedback,
+        .was-validated .form-control:invalid + .text-danger,
+        .was-validated .form-textarea:invalid ~ .invalid-feedback { /* Para errores de Thymeleaf */
+            display: block;
+        }
+        /* Ajuste para el textarea */
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            color: var(--dark-gray);
+            transition: all 0.2s ease-in-out;
+            box-sizing: border-box;
+            min-height: 100px; /* Altura mínima para el textarea */
+        }
+        .form-textarea:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 255, 242, 0.2);
+            outline: none;
+        }
+
+
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            .edit-page-container {
+                padding: 1rem;
+                border-radius: 0;
+                box-shadow: none;
+                margin: 0; /* Ocupa todo el ancho en móviles */
+                max-width: 100%;
+            }
+            .main-title {
+                font-size: 1.5rem;
+                padding: 0.8rem 1rem;
+                margin: -1rem -1rem 1rem -1rem;
+                border-radius: 0;
+            }
+            .form-card {
+                padding: 1rem;
+                border-radius: 0;
+            }
+            .mb-3 {
+                margin-bottom: 1rem !important;
+            }
+            .btn-primary-custom, .btn-back-custom {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 0.75rem;
+            }
+            form {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .d-grid.gap-2.d-md-flex.justify-content-md-end {
+                 flex-direction: column;
+                 align-items: center;
+            }
+            .d-grid.gap-2.d-md-flex.justify-content-md-end .btn-primary-custom,
+            .d-grid.gap-2.d-md-flex.justify-content-md-end .btn-back-custom {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="edit-page-container">
+            <h1 class="main-title">Editar Cita</h1>
+            
+            <div class="form-card">
+                <form th:action="@{/cita/save}" method="post" th:object="${cita}" class="needs-validation" novalidate>
+                    <input type="hidden" th:field="*{id}">
+                    
+                    <div class="mb-3">
+                        <label for="paciente" class="form-label">Paciente</label>
+                        <select class="form-select" id="paciente" th:field="*{paciente}" required>
+                            <option value="">Seleccione un paciente</option>
+                            <!-- Suponiendo que 'allPacientes' es una lista de objetos Paciente con 'id' y 'nombre' -->
+                            <option th:each="pac : ${allPacientes}"
+                                    th:value="${pac.id}"
+                                    th:text="${pac.nombre}"
+                                    th:selected="${cita.paciente != null and cita.paciente.id == pac.id}">
+                            </option>
+                        </select>
+                        <div class="invalid-feedback">Seleccione un paciente</div>
+                        <div class="text-danger" th:if="${#fields.hasErrors('paciente')}" th:errors="*{paciente}"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="medico" class="form-label">Médico</label>
+                        <select class="form-select" id="medico" th:field="*{medico}" required>
+                            <option value="">Seleccione un médico</option>
+                            <!-- Suponiendo que 'allMedicos' es una lista de objetos Medico con 'id' y 'nombre' -->
+                            <option th:each="med : ${allMedicos}"
+                                    th:value="${med.id}"
+                                    th:text="${med.nombre}"
+                                    th:selected="${cita.medico != null and cita.medico.id == med.id}">
+                            </option>
+                        </select>
+                        <div class="invalid-feedback">Seleccione un médico</div>
+                        <div class="text-danger" th:if="${#fields.hasErrors('medico')}" th:errors="*{medico}"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="fecha" class="form-label">Fecha y Hora</label>
+                        <input type="datetime-local" class="form-control" 
+                               id="fecha" th:field="*{fecha}" required>
+                        <div class="invalid-feedback">La fecha y hora de la cita son requeridas</div>
+                        <div class="text-danger" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="motivo" class="form-label">Motivo de la Cita</label>
+                        <textarea class="form-textarea" 
+                               id="motivo" th:field="*{motivo}" rows="3" 
+                               placeholder="Describa brevemente el motivo de la cita" required></textarea>
+                        <div class="invalid-feedback">El motivo de la cita es requerido</div>
+                        <div class="text-danger" th:if="${#fields.hasErrors('motivo')}" th:errors="*{motivo}"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="estado" class="form-label">Estado de la Cita</label>
+                        <select class="form-select" id="estado" th:field="*{estado}" required>
+                            <option value="">Seleccione un estado</option>
+                            <!-- Suponiendo que Cita.Estado es un enum en Java -->
+                            <option th:each="estadoOpt : ${T(org.esfe.modelos.Cita.Estado).values()}"
+                                    th:value="${estadoOpt}" th:text="${estadoOpt}"
+                                    th:selected="${cita.estado != null and cita.estado == estadoOpt}">
+                            </option>
+                        </select>
+                        <div class="invalid-feedback">Seleccione un estado para la cita</div>
+                        <div class="text-danger" th:if="${#fields.hasErrors('estado')}" th:errors="*{estado}"></div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a th:href="@{/cita}" class="btn-back-custom">Cancelar</a>
+                        <button type="submit" class="btn-primary-custom">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script para animación de entrada y validación del formulario -->
+    <th:block layout:fragment="script">
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Animación de entrada
+                const container = document.querySelector('.edit-page-container');
+                if (container) {
+                    container.style.opacity = '0';
+                    container.style.transform = 'translateY(20px)';
+                    container.style.transition = 'all 0.3s ease-out';
+                    
+                    setTimeout(() => {
+                        container.style.opacity = '1';
+                        container.style.transform = 'translateY(0)';
+                    }, 100);
+                }
+
+                // Validación de formularios (funcionalidad Bootstrap adaptada)
+                var forms = document.querySelectorAll('.needs-validation');
+                Array.prototype.slice.call(forms)
+                    .forEach(function (form) {
+                        form.addEventListener('submit', function (event) {
+                            if (!form.checkValidity()) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                            }
+                            // Añadir la clase 'was-validated' solo después del intento de envío
+                            form.classList.add('was-validated'); 
+                        }, false);
+                    });
+            });
+        </script>
+    </th:block>
+</body>
+</html>
