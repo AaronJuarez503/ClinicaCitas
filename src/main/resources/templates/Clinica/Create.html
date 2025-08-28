@@ -1,39 +1,246 @@
-<html lang="en"
-    xmlns="http://thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="/layouts/_mainLayout.html">
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/_mainLayout}">
+<head>
+    <title>Registrar Clínica</title>
+    <!-- CSS personalizado para los estilos del formulario -->
+    <style>
+        /* Definición de variables CSS para la paleta de colores */
+        :root {
+            --primary-blue: #00fff2;
+            --light-blue: #98faff;
+            --soft-blue: #e8f5ff;
+            --dark-gray: #343A40;
+            --medium-gray: #6C757D;
+            --light-gray: #E9ECEF;
+            --white: #FFFFFF;
+            --off-white: #F8F9FA;
+            --success-green: #28A745;
+            --danger-red: #DC3545;
+            --gradient-blue-to-light: linear-gradient(135deg, #70f5f1, #00cfb3);
+        }
 
-<div layout:fragment="content">
-    
-    <h1>Crear nueva Clinica</h1>
-    <form th:action="@{/clinica/save}" th:object="${clinica}" method="post">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="nombre">Nombre</label>
-                    <input type="text" class="form-control" th:field="*{nombre}" id="nombre" placeholder="Escriba el nombre del grupo" required>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="direccion">Direccion</label>
-                    <textarea class="form-control" th:field="*{direccion}" id="direccion" cols="12" rows="3" required></textarea>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="telefono">Telefono</label>
-                    <textarea class="form-control" th:field="*{telefono}" id="telefono" cols="12" rows="3" required></textarea>
-                </div>
-            </div>
-        </div>
-        <hr>
-        <button type="submit" class="btn btn-primary">Guardar</button> |
-        <a th:href="@{/clinica}">Regresar</a>
-    </form>
+        /* Estilos globales y de cuerpo */
+        body {
+            /* Cambiado a blanco para unificar el fondo */
+            background-color: var(--white);
+            font-family: 'Inter', Arial, sans-serif;
+            color: var(--dark-gray);
+            /* Centra el formulario vertical y horizontalmente */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            /* Elimina el padding para evitar barras de desplazamiento */
+            padding: 0;
+            overflow: hidden; /* Oculta cualquier barra de desplazamiento */
+        }
 
-</div>
+        /* Contenedor principal del formulario */
+        .form-container {
+            background-color: var(--white);
+            /* Reducido el padding para hacerlo más compacto */
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            /* Reducido el ancho máximo para hacerlo más pequeño */
+            max-width: 650px;
+            width: 100%;
+        }
+
+        /* Estilo para el título principal con gradiente */
+        .main-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--white);
+            background-image: var(--gradient-blue-to-light);
+            /* Reducido el padding y ajustado el margen */
+            padding: 1rem 1.5rem;
+            margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        /* Diseño de cuadrícula para los campos del formulario */
+        .form-layout {
+            display: grid;
+            /* Se ha ajustado el tamaño de las columnas para que los campos no se vean tan anchos */
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 1rem 1.5rem; /* Reducido el gap para más compacidad */
+        }
+
+        .form-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Estilo de las etiquetas de los campos */
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem; /* Fuente más pequeña */
+        }
+
+        /* Estilo para los inputs y selects */
+        .form-control, .select-control {
+            width: 95%;
+            /* Reducido el padding para campos más pequeños */
+            padding: 0.6rem 0.8rem;
+            font-size: 0.9rem; /* Fuente más pequeña */
+            border: 1px solid var(--medium-gray);
+            border-radius: 0.5rem;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .form-control:focus, .select-control:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        .select-control {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.8rem center; /* Ajustado el icono del select */
+            background-size: 14px 10px;
+            padding-right: 2.2rem;
+        }
+
+        textarea.form-control {
+            /* Reducida la altura mínima */
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        /* Estilo para los campos que ocupan todo el ancho */
+        .section-full-width {
+            grid-column: 1 / 3;
+        }
+        
+        /* Contenedor de los botones */
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem; /* Reducido el margen superior */
+        }
+
+        /* Estilos para los botones */
+        .btn {
+            /* Reducido el padding de los botones */
+            padding: 0.6rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-success {
+            background-color: var(--success-green);
+            color: var(--white);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-secondary {
+            background-color: var(--medium-gray);
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .btn-primary { /* Estilo para el botón primario de Guardar Clínica */
+            background-color: #00cfb3; /* Usando tu color aqua principal */
+            color: var(--white);
+        }
+        .btn-primary:hover {
+            background-color: #00a89a; /* Tono más oscuro al pasar el ratón */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            .form-layout {
+                grid-template-columns: 1fr;
+            }
+            .form-container {
+                padding: 1.5rem;
+                max-width: 100%;
+            }
+            .main-title {
+                font-size: 2rem;
+            }
+            .section-full-width {
+                max-width: 100%;
+            }
+            .form-control, .select-control {
+                width: 100%;
+            }
+            .form-actions {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="form-container">
+            <h1 class="main-title">Registrar Nueva Clínica</h1>
+            <form th:action="@{/clinica/save}" th:object="${clinica}" method="post">
+                <div class="form-layout">
+                    <!-- Campo Nombre -->
+                    <div class="form-section section-full-width">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" th:field="*{nombre}" id="nombre" placeholder="Escriba el nombre de la clínica" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+                    </div>
+
+                    <!-- Campo Dirección -->
+                    <div class="form-section section-full-width">
+                        <label for="direccion" class="form-label">Dirección</label>
+                        <textarea class="form-control" th:field="*{direccion}" id="direccion" rows="3" placeholder="Escriba la dirección de la clínica" required></textarea>
+                        <div class="text-danger" th:if="${#fields.hasErrors('direccion')}" th:errors="*{direccion}"></div>
+                    </div>
+
+                    <!-- Campo Teléfono -->
+                    <div class="form-section section-full-width">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input type="tel" class="form-control" th:field="*{telefono}" id="telefono" 
+                               pattern="[0-9]{4}-[0-9]{4}" placeholder="0000-0000" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></div>
+                    </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="form-actions">
+                    <a th:href="@{/clinica}" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Guardar Clínica</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
