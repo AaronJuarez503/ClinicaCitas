@@ -1,40 +1,246 @@
-<html lang="en"
-    xmlns="http://thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="/layouts/_mainLayout.html">
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/_mainLayout}">
+<head>
+    <title>Editar Clínica</title>
+    <style>
+        /* Definición de variables CSS para la paleta de colores */
+        :root {
+            --primary-blue: #00fff2;
+            --light-blue: #98faff;
+            --soft-blue: #e8f5ff;
+            --dark-gray: #343A40;
+            --medium-gray: #6C757D;
+            --light-gray: #E9ECEF;
+            --white: #FFFFFF;
+            --off-white: #F8F9FA;
+            --success-green: #28A745;
+            --danger-red: #DC3545;
+            --info-blue: #17A2B8;
+            --gradient-blue-to-light: linear-gradient(135deg, #70f5f1, #00cfb3);
+            --form-background: #f7fafc; /* Fondo para el área del formulario */
+        }
 
-<div layout:fragment="content">
-    
-<h1>Editar Clinica</h1>
-    <form th:action="@{/clinica/save}" th:object="${clinica}" method="post">
-        <input type="hidden" th:field="*{id}">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="nombre">Nombre</label>
-                    <input type="text" class="form-control" th:field="*{nombre}" id="nombre" placeholder="Escriba el nombre del grupo" required>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="direccion">Direccion</label>
-                    <textarea class="form-control" th:field="*{direccion}" id="direccion" cols="12" rows="3" required></textarea>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="telefono">Telefono</label>
-                    <textarea class="form-control" th:field="*{telefono}" id="telefono" cols="12" rows="3" required></textarea>
-                </div>
-            </div>
-        </div>
-        <hr>
-        <button type="submit" class="btn btn-primary">Guardar cambios</button> |
-        <a th:href="@{/clinica}">Regresar</a>
-    </form>
+        /* Estilos globales y de cuerpo, replicados para asegurar consistencia si _mainLayout no los tiene */
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            color: var(--dark-gray);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
 
-</div>
+        /* Contenedor principal para la página de edición */
+        .edit-page-container {
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px; /* Ancho máximo para el formulario */
+            margin: 2rem auto; /* Centrar y añadir margen superior */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Estilo para el título principal */
+        .main-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--white);
+            background-image: var(--gradient-blue-to-light);
+            padding: 1rem 1.5rem;
+            margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        /* Estilo para el "card" que contiene el formulario */
+        .form-card {
+            background-color: var(--form-background);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--light-gray);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem; /* Espacio entre grupos de formulario */
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 0.5rem;
+            text-align: left;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            color: var(--dark-gray);
+            transition: all 0.2s ease-in-out;
+            box-sizing: border-box; /* Asegura que padding y border se incluyan en el ancho total */
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 255, 242, 0.2); /* Sombra de enfoque sutil */
+            outline: none;
+        }
+
+        /* Estilos para el botón de guardar cambios */
+        .btn-primary-custom {
+            background-color: var(--primary-blue);
+            color: var(--dark-gray); /* Texto oscuro para contraste en azul claro */
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 0.75rem;
+        }
+        .btn-primary-custom:hover {
+            background-color: #00e0d5; /* Tono ligeramente más oscuro al pasar el ratón */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Estilo para el botón "Regresar" */
+        .btn-back-custom {
+            background-color: var(--medium-gray);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-back-custom:hover {
+            background-color: var(--dark-gray);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Separador horizontal */
+        hr {
+            border-top: 1px solid var(--light-gray);
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            .edit-page-container {
+                padding: 1rem;
+                border-radius: 0;
+                box-shadow: none;
+                margin: 0; /* Ocupa todo el ancho en móviles */
+                max-width: 100%;
+            }
+            .main-title {
+                font-size: 1.5rem;
+                padding: 0.8rem 1rem;
+                margin: -1rem -1rem 1rem -1rem;
+                border-radius: 0;
+            }
+            .form-card {
+                padding: 1rem;
+                border-radius: 0;
+            }
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            .btn-primary-custom, .btn-back-custom {
+                width: calc(100% - 0.75rem); /* Ajusta el ancho para el padding */
+                margin-right: 0;
+                margin-bottom: 0.75rem;
+            }
+            form {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="edit-page-container">
+            <h1 class="main-title">Editar Clínica</h1>
+            
+            <div class="form-card">
+                <form th:action="@{/clinica/save}" th:object="${clinica}" method="post">
+                    <input type="hidden" th:field="*{id}">
+                    
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" class="form-control" th:field="*{nombre}" id="nombre" placeholder="Escriba el nombre de la clínica" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="direccion">Dirección</label>
+                        <textarea class="form-control" th:field="*{direccion}" id="direccion" rows="3" placeholder="Escriba la dirección de la clínica" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="telefono">Teléfono</label>
+                        <input type="text" class="form-control" th:field="*{telefono}" id="telefono" placeholder="Escriba el número de teléfono" required>
+                    </div>
+
+                    <!-- Nuevo Campo Ubicación (Google Maps URL) -->
+                    <div class="form-group">
+                        <label for="ubicacionUrl">Ubicación (Google Maps URL)</label>
+                        <input type="url" class="form-control" th:field="*{ubicacionUrl}" id="ubicacionUrl" placeholder="Ej: https://maps.app.goo.gl/abcdefg">
+                    </div>
+                    
+                    <hr>
+                    
+                    <div style="text-align: center;">
+                        <button type="submit" class="btn-primary-custom">Guardar cambios</button>
+                        <a th:href="@{/clinica}" class="btn-back-custom">Regresar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script para animación de entrada (opcional, pero mejora la UX) -->
+    <th:block layout:fragment="script">
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const container = document.querySelector('.edit-page-container');
+                if (container) {
+                    container.style.opacity = '0';
+                    container.style.transform = 'translateY(20px)';
+                    container.style.transition = 'all 0.3s ease-out';
+                    
+                    setTimeout(() => {
+                        container.style.opacity = '1';
+                        container.style.transform = 'translateY(0)';
+                    }, 100);
+                }
+            });
+        </script>
+    </th:block>
+</body>
+</html>
