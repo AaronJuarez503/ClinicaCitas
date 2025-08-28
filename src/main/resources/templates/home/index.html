@@ -1,12 +1,186 @@
-<html lang="en"
-xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-layout:decorate="/layouts/_mainLayout.html">
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/_mainLayout.html}">
+<head>
+    <title>Acceso Restringido</title>
+    <!-- CSS personalizado para los estilos de la advertencia -->
+    <style>
+        /* Definición de variables CSS para la paleta de colores */
+        :root {
+            --primary-blue: #00fff2;
+            --light-blue: #98faff;
+            --soft-blue: #e8f5ff;
+            --dark-gray: #343A40;
+            --medium-gray: #6C757D;
+            --light-gray: #E9ECEF;
+            --white: #FFFFFF;
+            --off-white: #F8F9FA;
+            --success-green: #28A745;
+            --danger-red: #DC3545;
+            --gradient-blue-to-light: linear-gradient(135deg, #70f5f1, #00cfb3);
+            --shadow-strong: 0 15px 30px rgba(0, 0, 0, 0.2);
+            --shadow-light: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
 
-<div layout:fragment="content">
-    
-    <h1 style="text-align: center;">Hola, Bienvenidos, esta es la pagina principal para el inicio</h1>
-     <div sec:authorize="isAnonymous()" style="text-align: center; background-color: rgb(224, 84, 84); font-size: 30px; color: aliceblue;" role="alert">
-        Debes iniciar sesión para poder utilizar la aplicación.
+        /* Estilos globales y de cuerpo */
+        body {
+            background-color: var(--off-white); /* Un fondo más suave para la página */
+            font-family: 'Inter', Arial, sans-serif;
+            color: var(--dark-gray);
+            /* --- INICIO DE AJUSTE PARA CENTRADO --- */
+            display: flex;
+            justify-content: center; /* Centrado horizontal */
+            align-items: center; /* Centrado vertical */
+            min-height: 100vh; /* Asegura que el body ocupe el 100% de la altura de la ventana */
+            /* --- FIN DE AJUSTE PARA CENTRADO --- */
+            margin: 0;
+            padding: 1rem; /* Pequeño padding para móviles */
+            box-sizing: border-box; /* Asegura que el padding no cause desbordamiento */
+        }
+
+        /* Contenedor principal de la advertencia */
+        .warning-container {
+            background-color: var(--white);
+            padding: 0; /* Ajustado para que el título abarque el borde */
+            border-radius: 1.5rem; /* Bordes más redondeados */
+            box-shadow: var(--shadow-strong); /* Sombra más pronunciada para el efecto de "flotante" */
+            max-width: 500px;
+            width: 100%;
+            overflow: hidden; /* Para que el título con gradiente no se desborde */
+            text-align: center;
+            animation: fadeInScale 0.5s ease-out forwards; /* Animación de entrada */
+        }
+
+        /* Estilo para el título principal con gradiente */
+        .main-title {
+            font-size: 2.2rem; /* Tamaño de fuente un poco más grande */
+            font-weight: 800; /* Más audaz */
+            color: var(--white);
+            background-image: var(--gradient-blue-to-light);
+            padding: 1.5rem 1rem;
+            margin: 0; /* Elimina márgenes para que se adhiera al borde superior */
+            border-top-left-radius: 1.5rem;
+            border-top-right-radius: 1.5rem;
+            box-shadow: var(--shadow-light); /* Sombra sutil debajo del título */
+            text-align: center;
+            letter-spacing: 0.05rem; /* Un poco de espaciado entre letras */
+        }
+
+        /* Contenido de la advertencia */
+        .warning-content {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem; /* Espacio entre elementos */
+        }
+
+        .warning-icon {
+            width: 80px; /* Tamaño del icono */
+            height: 80px;
+            color: var(--primary-blue); /* Color principal del icono */
+            margin-bottom: 0.5rem;
+        }
+
+        .warning-message {
+            font-size: 1.2rem;
+            color: var(--dark-gray);
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-text {
+            color: var(--primary-blue);
+            font-weight: 700;
+        }
+
+        /* Estilos para el botón de acción */
+        .btn-action {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 0.75rem; /* Bordes más redondeados */
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            background-image: var(--gradient-blue-to-light); /* Utiliza el mismo gradiente */
+            color: var(--white);
+            box-shadow: 0 6px 15px rgba(0, 255, 242, 0.4); /* Sombra que emana del color del botón */
+            text-decoration: none; /* Para si es un enlace */
+        }
+
+        .btn-action:hover {
+            transform: translateY(-4px) scale(1.02); /* Efecto de elevación y ligero crecimiento */
+            box-shadow: 0 10px 20px rgba(0, 255, 242, 0.6); /* Sombra más intensa al pasar el ratón */
+        }
+
+        /* Animaciones */
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Estilos responsivos */
+        @media (max-width: 600px) {
+            .warning-container {
+                border-radius: 1rem;
+            }
+            .main-title {
+                font-size: 1.8rem;
+                padding: 1.2rem 0.8rem;
+                border-top-left-radius: 1rem;
+                border-top-right-radius: 1rem;
+            }
+            .warning-content {
+                padding: 1.5rem;
+                gap: 1rem;
+            }
+            .warning-icon {
+                width: 60px;
+                height: 60px;
+            }
+            .warning-message {
+                font-size: 1rem;
+            }
+            .btn-action {
+                padding: 0.7rem 1.5rem;
+                font-size: 1rem;
+                width: 100%; /* Ocupa todo el ancho en móviles */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="warning-container">
+            <h1 class="main-title">Acceso Requerido</h1>
+            <div class="warning-content">
+                <!-- Icono de Candado (SVG) -->
+                <svg class="warning-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                
+                <p class="warning-message">
+                    Para acceder a esta sección y disfrutar de todas las funcionalidades, por favor <span class="highlight-text">inicia sesión</span> en tu cuenta.
+                </p>
+                
+                <a href="/login" class="btn-action">Iniciar Sesión</a>
+            </div>
+        </div>
     </div>
-
-</div>
+    <th:block layout:fragment="script">
+        <!-- Puedes añadir scripts específicos si la advertencia los necesitara en el futuro -->
+        <!-- Por ahora no hay scripts JS específicos para esta advertencia, pero el fragmento está listo -->
+    </th:block>
+</body>
+</html>
