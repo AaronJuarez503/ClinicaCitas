@@ -5,70 +5,223 @@
       layout:decorate="~{layouts/_mainLayout}">
 <head>
     <title>Eliminar Médico</title>
+    <style>
+        /* Definición de variables CSS para la paleta de colores */
+        :root {
+            --primary-blue: #00fff2;
+            --light-blue: #98faff;
+            --soft-blue: #e8f5ff;
+            --dark-gray: #343A40;
+            --medium-gray: #6C757D;
+            --light-gray: #E9ECEF;
+            --white: #FFFFFF;
+            --off-white: #F8F9FA;
+            --success-green: #28A745;
+            --danger-red: #DC3545; /* Rojo base para acciones de peligro */
+            --info-blue: #17A2B8;
+            --gradient-blue-to-light: linear-gradient(135deg, #70f5f1, #00cfb3);
+
+            /* Nuevos colores para el gradiente de eliminación */
+            --soft-red-pink: #F7CACB; /* Rojo rosado suave */
+            --old-rose-color: #C28B8B; /* Rosado vieja */
+            --pure-white: #FFFFFF;    /* Blanco */
+            --delete-gradient-background: linear-gradient(135deg, var(--soft-red-pink), var(--old-rose-color), var(--pure-white));
+        }
+
+        /* Estilos globales y de cuerpo, replicados para asegurar consistencia si _mainLayout no los tiene */
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            color: var(--dark-gray);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Contenedor principal para la página de eliminación */
+        /* Asegura que ocupe todo el ancho disponible y se alinee como el resto de tus CRUDs */
+        .delete-page-container {
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        /* Estilo para el título principal */
+        .main-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--white);
+            background-image: var(--gradient-blue-to-light);
+            padding: 1rem 1.5rem;
+            margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        /* Estilo para el mensaje de confirmación de eliminación */
+        .confirmation-message {
+            font-size: 1.25rem; /* Ajustado para que se vea bien dentro del card */
+            color: var(--danger-red);
+            margin-bottom: 1rem; /* Margen inferior para separarlo de la lista de detalles */
+            font-weight: 600; /* Un poco más de peso para resaltar */
+            text-align: center; /* Centrar el texto dentro del card */
+            padding-top: 0.5rem; /* Pequeño padding superior dentro del card */
+        }
+
+        /* Estilo para el "card" que contiene los detalles del médico */
+        .medico-details-card { /* Cambiado de .clinica-details-card a .medico-details-card */
+            background-image: var(--delete-gradient-background); /* Aplica el gradiente */
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            margin-bottom: 1.5rem;
+            color: var(--dark-gray); /* Asegura que el texto sea legible sobre el gradiente */
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .medico-details-card hr {
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .medico-details-card dl.row {
+            margin-bottom: 1rem;
+        }
+
+        .medico-details-card dt {
+            font-weight: 600;
+            color: var(--medium-gray);
+        }
+
+        /* Estilo para el botón de eliminación personalizado */
+        .btn-delete-custom {
+            background-color: var(--danger-red);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 0.75rem; /* Espacio para el botón "Regresar" */
+        }
+        .btn-delete-custom:hover {
+            background-color: #c53030; /* Tono más oscuro al pasar el ratón */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Estilo para el botón "Regresar" */
+        .btn-back {
+            background-color: var(--medium-gray);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-back:hover {
+            background-color: var(--dark-gray);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Mensaje de advertencia específico */
+        .warning-message {
+            color: var(--danger-red);
+            font-size: 0.9rem;
+            margin-top: -0.5rem; /* Ajuste para acercarlo a los detalles */
+            margin-bottom: 1.5rem; /* Espacio antes de los botones */
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(220, 53, 69, 0.3); /* Borde suave */
+            background-color: rgba(220, 53, 69, 0.05); /* Fondo muy claro */
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+
+
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            .delete-page-container {
+                padding: 1rem;
+                border-radius: 0;
+                box-shadow: none;
+                margin: 0;
+            }
+            .main-title {
+                font-size: 1.5rem;
+                padding: 0.8rem 1rem;
+                margin: -1rem -1rem 1rem -1rem;
+                border-radius: 0;
+            }
+            .confirmation-message {
+                font-size: 1.1rem;
+                margin-bottom: 0.75rem;
+            }
+            .medico-details-card { /* Aplicar también a la tarjeta de médico */
+                padding: 1rem;
+            }
+            .btn-delete-custom, .btn-back {
+                width: calc(100% - 1rem); /* Ajusta el ancho para el padding */
+                margin-right: 0;
+                margin-bottom: 0.75rem;
+            }
+            form {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
 </head>
 <body>
     <div layout:fragment="content">
-        <div class="container mt-5">
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-body p-5 text-center">
-                            <!-- Ícono de eliminación -->
-                            <div class="display-1 text-danger mb-4">
-                                <i class="bi bi-person-x-fill"></i>
-                            </div>
-                            
-                            <!-- Título y subtítulo -->
-                            <h2 class="text-danger mb-4">¿Desea eliminar este médico?</h2>
+        <div class="delete-page-container">
+            <h1 class="main-title">Eliminar Médico</h1>
+            
+            <div class="medico-details-card">
+                <h3 class="confirmation-message">¿Estás seguro de que deseas eliminar este médico?</h3>
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-2">ID</dt>
+                    <dd class="col-sm-10" th:text="${medico.id}"></dd>
 
-                            <!-- Información del médico en tarjetas -->
-                            <div class="row g-4 mb-4">
-                                <div class="col-md-6">
-                                    <div class="p-4 border rounded-3 bg-light text-start h-100">
-                                        <h6 class="text-muted mb-2">ID</h6>
-                                        <p class="h5 mb-0" th:text="${medico.id}"></p>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="p-4 border rounded-3 bg-light text-start h-100">
-                                        <h6 class="text-muted mb-2">Nombre</h6>
-                                        <p class="h5 mb-0" th:text="${medico.nombre}"></p>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="p-4 border rounded-3 bg-light text-start h-100">
-                                        <h6 class="text-muted mb-2">Especialidad</h6>
-                                        <p class="h5 mb-0" th:text="${medico.especialidad}"></p>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="p-4 border rounded-3 bg-light text-start h-100">
-                                        <h6 class="text-muted mb-2">Clínica</h6>
-                                        <p class="h5 mb-0" th:text="${medico.clinica?.nombre}"></p>
-                                    </div>
-                                </div>
-                            </div>
+                    <dt class="col-sm-2">Nombre</dt>
+                    <dd class="col-sm-10" th:text="${medico.nombre}"></dd>
 
-                            <!-- Mensaje de advertencia -->
-                            <div class="alert alert-danger border-danger bg-danger bg-opacity-10 mb-4">
-                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                <span>Esta acción eliminará al médico y todas sus citas asociadas</span>
-                            </div>
+                    <dt class="col-sm-2">Especialidad</dt>
+                    <dd class="col-sm-10" th:text="${medico.especialidad}"></dd>
 
-                            <!-- Formulario y botones -->
-                            <form th:action="@{/medico/delete/{id}(id=${medico.id})}" method="post">
-                                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
-                                    <a th:href="@{/medico}" class="btn btn-light btn-lg px-5">
-                                        <i class="bi bi-arrow-left me-2"></i>Cancelar
-                                    </a>
-                                    <button type="submit" class="btn btn-danger btn-lg px-5">
-                                        <i class="bi bi-trash me-2"></i>Eliminar
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+                    <dt class="col-sm-2">Clínica</dt>
+                    <dd class="col-sm-10" th:text="${medico.clinica?.nombre}"></dd>
+                </dl>
+
+                <!-- Mensaje de advertencia específico -->
+                <p class="warning-message">Esta acción eliminará al médico y todas sus citas asociadas.</p>
+
+                <form th:action="@{/medico/delete/{id}(id=${medico.id})}" method="post">
+                    <input type="hidden" name="Id" th:value="${medico.id}">
+                    <button type="submit" class="btn-delete-custom">Eliminar</button>
+                    <a th:href="@{/medico}" class="btn-back">Regresar</a>
+                </form>
             </div>
         </div>
     </div>
@@ -77,15 +230,17 @@
     <th:block layout:fragment="script">
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                const card = document.querySelector('.card');
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                card.style.transition = 'all 0.3s ease-out';
-                
-                setTimeout(() => {
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, 100);
+                const card = document.querySelector('.medico-details-card'); // Seleccionar la nueva clase de tarjeta
+                if (card) { // Asegurarse de que la tarjeta exista
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'all 0.3s ease-out';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }
             });
         </script>
     </th:block>
