@@ -1,52 +1,364 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="author" content="Yinka Enoch Adedokun">
-	<title>Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Yinka Enoch Adedokun">
+    <title>Login</title>
 
-    <link th:href="@{/css/login.css}" rel="stylesheet" >
-    <link th:href="@{/css/styles.css}" rel="stylesheet" >   
+    <!-- Font Awesome para los iconos (ej. el de Android) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Enlace a la fuente Inter de Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
+    <style>
+        /* Definición de variables CSS para la paleta de colores */
+        :root {
+            --primary-blue: #00fff2;
+            --light-blue: #98faff;
+            --soft-blue: #e8f5ff;
+            --dark-gray: #343A40;
+            --medium-gray: #6C757D;
+            --light-gray: #E9ECEF;
+            --white: #FFFFFF;
+            --off-white: #F8F9FA;
+            --success-green: #28A745;
+            --danger-red: #DC3545;
+            --gradient-blue-to-light: linear-gradient(135deg, #70f5f1, #00cfb3);
+            --shadow-strong: 0 15px 30px rgba(0, 0, 0, 0.2);
+            --shadow-light: 0 5px 15px rgba(0, 0, 0, 0.08);
+            /* --light-gray-icon: #A0A0A0; Este color no estaba en esta versión */
+        }
+
+        /* Estilos globales y de cuerpo */
+        body {
+            background-color: var(--off-white);
+            font-family: 'Inter', Arial, sans-serif;
+            color: var(--dark-gray);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Asegura que el body ocupe el 100% de la altura de la ventana */
+            margin: 0;
+            padding: 1rem;
+            box-sizing: border-box;
+            flex-direction: column; /* Para centrar también el footer */
+        }
+
+        /* Contenedor principal del formulario de login */
+        .main-content {
+            background-color: var(--white);
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow-strong);
+            max-width: 900px; /* Ajusta el ancho máximo para la vista de dos columnas */
+            width: 100%;
+            overflow: hidden;
+            display: flex; /* Para las dos columnas */
+            animation: fadeInScale 0.5s ease-out forwards;
+            min-height: 450px; /* Altura mínima para que no se vea aplastado */
+        }
+
+        /* Estilos para la sección de información de la compañía (lado izquierdo) */
+        .company__info {
+            background-image: var(--gradient-blue-to-light);
+            color: var(--white);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            border-top-left-radius: 1.5rem;
+            border-bottom-left-radius: 1.5rem;
+            flex: 1; /* Permite que ocupe espacio flexible */
+            min-width: 250px; /* Anchura mínima para evitar que se comprima demasiado */
+        }
+
+        .company__logo h2 {
+            font-size: 4rem; /* Icono más grande */
+            margin: 0;
+        }
+
+        .company_title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* Estilos para el formulario de login (lado derecho) */
+        .login_form {
+            background-color: var(--white);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-top-right-radius: 1.5rem;
+            border-bottom-right-radius: 1.5rem;
+            flex: 2; /* Ocupa el doble de espacio que company__info */
+            min-width: 300px; /* Anchura mínima para el formulario */
+        }
+
+        .login_form h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark-gray);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .form-group {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem; /* Espacio entre los campos del formulario */
+        }
+
+        .form__input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            color: var(--dark-gray);
+            transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            box-sizing: border-box; /* Asegura que el padding no desborde */
+        }
+
+        .form__input::placeholder {
+            color: var(--medium-gray);
+        }
+
+        .form__input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 255, 242, 0.3);
+        }
+
+        /* Estilo para el botón de submit */
+        .btn {
+            display: inline-block;
+            width: 100%; /* El botón ocupa todo el ancho */
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            background-image: var(--gradient-blue-to-light);
+            color: var(--white);
+            box-shadow: 0 6px 15px rgba(0, 255, 242, 0.4);
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 10px 20px rgba(0, 255, 242, 0.6);
+        }
+
+        /* Estilos para el texto "¿No tienes cuenta?" */
+        .login_form p {
+            font-size: 0.95rem;
+            color: var(--medium-gray);
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .login_form p a {
+            color: var(--primary-blue);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .login_form p a:hover {
+            color: #00b8aa; /* Un tono un poco más oscuro al pasar el ratón */
+            text-decoration: underline;
+        }
+
+        /* Estilos para el footer */
+        .footer {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: var(--medium-gray);
+            text-align: center; /* Asegura que el footer esté centrado */
+        }
+
+        .footer a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Animaciones */
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column; /* Las columnas se apilan en pantallas pequeñas */
+                border-radius: 1rem;
+                min-height: unset; /* Quita la altura mínima fija */
+            }
+
+            .company__info {
+                border-top-left-radius: 1rem;
+                border-top-right-radius: 1rem;
+                border-bottom-left-radius: 0; /* Reinicia el borde inferior izquierdo */
+                padding: 1.5rem;
+                text-align: center;
+                min-width: unset; /* Quita el min-width */
+            }
+
+            .login_form {
+                border-top-right-radius: 0; /* Reinicia el borde superior derecho */
+                border-bottom-left-radius: 1rem; /* Borde para la parte inferior en móviles */
+                border-bottom-right-radius: 1rem;
+                padding: 1.5rem;
+                min-width: unset; /* Quita el min-width */
+            }
+
+            .company__logo h2 {
+                font-size: 3rem;
+            }
+
+            .company_title {
+                font-size: 1.5rem;
+            }
+
+            .login_form h2 {
+                font-size: 2rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .form-group {
+                gap: 1rem;
+            }
+            .btn {
+                padding: 0.7rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+
+        /* Estilos para mensajes de validación */
+        .message-box {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            color: var(--white);
+        }
+
+        .message-box.show {
+            opacity: 1;
+        }
+
+        .message-box.success {
+            background-color: var(--success-green);
+        }
+
+        .message-box.error {
+            background-color: var(--danger-red);
+        }
+    </style>
 </head>
 <body>
-	<!-- Main Content -->
-	<div class="container-fluid">
-		<div class="row main-content bg-success text-center">
-			<div class="col-md-4 text-center company__info">
-				<span class="company__logo"><h2><span class="fa fa-android"></span></h2></span>
-				<h4 class="company_title">Your Logo</h4>
-			</div>
-			<div class="col-md-8 col-xs-12 col-sm-12 login_form ">
-				<div class="container-fluid">
-					<div class="row">
-						<h2>Log In</h2>
-					</div>
-					<div class="row">
-						<form th:action="@{/login}" method="post" control="" class="form-group">
-							<div class="row">
-								<input type="text" name="username" id="username" class="form__input" placeholder="Usuario">
-							</div>
-							<div class="row">
-								<!-- <span class="fa fa-lock"></span> -->
-								<input type="password" name="password" id="password" class="form__input" placeholder="contrseña">
-							</div>
-							<div class="row">
-								<input type="submit" value="Submit" class="btn">
-							</div>
-						</form>
-					</div>
-					<div sec:authorize="isAnonymous()">
-						<p>Don't have an account? <a th:href="@{/usuarios/create}">Register Here</a></p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- Footer -->
-	<div class="container-fluid text-center footer">
-		Coded with &hearts; by <a href="https://bit.ly/yinkaenoch">Yinka.</a></p>
-	</div>
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="company__info">
+           <span class="company__logo">
+                <h2>
+                    <!-- Aquí va el logo SVG -->
+                    <svg width="4rem" height="4rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-activity">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                        <path d="M2 17l10 5 10-5"></path>
+                        <path d="M2 12l10 5 10-5"></path>
+                    </svg>
+                </h2>
+            </span>
+            <h4 class="company_title">ConnectMed</h4>
+        </div>
+        <div class="login_form">
+            <h2>Iniciar Sesión</h2>
+            <form th:action="@{/login}" method="post" class="form-group" id="loginForm">
+                <div>
+                    <input type="text" name="username" id="username" class="form__input" placeholder="Usuario">
+                </div>
+                <div>
+                    <input type="password" name="password" id="password" class="form__input" placeholder="Contraseña">
+                </div>
+                <div id="messageBox" class="message-box"></div> <!-- Caja de mensajes -->
+                <div>
+                    <input type="submit" value="Acceder" class="btn">
+                </div>
+            </form>
+            <p>¿No tienes una cuenta? <a href="/register">Regístrate Aquí</a></p>
+        </div>
+    </div>
+    <!-- Footer -->
+    <div class="footer">
+        <p>Codificado con &hearts; </a>Amor</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const messageBox = document.getElementById('messageBox');
+            // const togglePassword = document.getElementById('togglePassword'); // No existía en esta versión
+            // const togglePasswordIcon = togglePassword ? togglePassword.querySelector('i') : null; // No existía en esta versión
+
+            // Credenciales de ejemplo (¡solo para demostración, NO SEGURAS!)
+            const validUsername = 'usuario';
+            const validPassword = 'password123';
+
+            // Función para mostrar mensajes
+            function showMessage(message, type) {
+                messageBox.textContent = message;
+                messageBox.className = `message-box show ${type}`;
+                setTimeout(() => {
+                    messageBox.classList.remove('show');
+                }, 3000);
+            }
+
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Evita el envío real del formulario a '/login' por ahora
+
+                    const username = usernameInput.value;
+                    const password = passwordInput.value;
+
+                    if (username === validUsername && password === validPassword) {
+                        showMessage('¡Inicio de sesión exitoso! Redirigiendo...', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/'; 
+                        }, 1500);
+                    } else {
+                        showMessage('Usuario o contraseña incorrectos.', 'error');
+                    }
+                });
+            }
+
+            // La lógica para mostrar/ocultar contraseña no estaba presente en esta versión.
+        });
+    </script>
 </body>
 </html>
