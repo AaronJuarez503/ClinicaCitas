@@ -2,90 +2,350 @@
 <html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layouts/_mainLayout.html}">
+      layout:decorate="~{layouts/_mainLayout}">
 <head>
     <title>Listado de Médicos</title>
+    <!-- CSS personalizado para los estilos del listado -->
+    <style>
+        /* Definición de variables CSS para la paleta de colores */
+        :root {
+            --primary-blue: #00fff2;
+            --light-blue: #98faff;
+            --soft-blue: #e8f5ff;
+            --dark-gray: #343A40;
+            --medium-gray: #6C757D;
+            --light-gray: #E9ECEF;
+            --white: #FFFFFF;
+            --off-white: #F8F9FA;
+            --success-green: #28A745;
+            --danger-red: #DC3545;
+            --gradient-blue-to-light: linear-gradient(135deg, #70f5f1, #00cfb3);
+        }
+
+        /* Estilos globales y de cuerpo */
+        body {
+            background-color: var(--white);
+            font-family: 'Inter', Arial, sans-serif;
+            color: var(--dark-gray);
+            /* Importante: Eliminar propiedades de centrado y altura mínima del body
+               para que el contenido del fragmento pueda fluir libremente. */
+            margin: 0;
+            padding: 0;
+            /* overflow-x: hidden es importante para evitar scroll horizontal global */
+            overflow-x: hidden; 
+        }
+
+        /* Contenedor principal para el listado */
+        /* Ajustado para ocupar el 100% del ancho del padre sin márgenes automáticos
+           que causen desplazamiento en el body. */
+        .list-container {
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            width: 100%; /* Ocupa el 100% del ancho disponible de su padre */
+            display: flex;
+            flex-direction: column;
+            /* Eliminar margin: auto. Si necesitas espacio alrededor, usa padding en el elemento padre (layout fragment)
+               o un margin-top/bottom específico para el contenido. */
+            margin: 0; /* Eliminar margen automático */
+            box-sizing: border-box; /* Incluye padding y border en el width */
+        }
+        
+        /* Estilo para el título principal del listado */
+        .main-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--white);
+            background-image: var(--gradient-blue-to-light);
+            padding: 1rem 1.5rem;
+            /* Ajustar márgenes para que el título ocupe todo el ancho del list-container */
+            margin: -1.5rem -1.5rem 1.5rem -1.5rem; 
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        /* Estilo para el botón de "Nuevo Médico" */
+        .btn-add {
+            background-color: #00cfb3; /* Usando tu color aqua principal */
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-decoration: none; /* Asegura que no tenga subrayado */
+            align-self: flex-start; /* Alinea a la izquierda dentro del flex container */
+            margin-bottom: 1.5rem;
+        }
+        .btn-add:hover {
+            background-color: #00a89a; /* Tono más oscuro al pasar el ratón */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Contenedor para la tabla con scroll horizontal en pantallas pequeñas */
+        .table-responsive {
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Estilo de la tabla de datos */
+        .data-table {
+            width: 100%; /* La tabla siempre ocupará el 100% del contenedor responsive */
+            border-collapse: collapse;
+            background-color: var(--white);
+            border-radius: 0.5rem;
+            overflow: hidden; /* Asegura bordes redondeados para la tabla */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .data-table th, .data-table td {
+            padding: 0.8rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+        }
+
+        .data-table th {
+            background-color: var(--off-white);
+            font-weight: 600;
+            color: var(--medium-gray);
+            white-space: nowrap; /* Evita que los encabezados se rompan en varias líneas */
+        }
+
+        .data-table tbody tr:hover {
+            background-color: var(--soft-blue);
+        }
+
+        /* Estilos para los botones de acción dentro de la tabla */
+        .btn-action {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: none;
+            border-radius: 0.4rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            text-decoration: none;
+            display: inline-block; /* Para que ocupen solo el espacio necesario */
+            margin-right: 0.5rem; /* Espacio entre botones */
+        }
+        .btn-action:last-child {
+            margin-right: 0;
+        }
+
+        .btn-secondary-action { /* Para Detalles */
+            background-color: var(--medium-gray);
+            color: var(--white);
+        }
+        .btn-secondary-action:hover {
+            background-color: var(--dark-gray);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn-info-action { /* Para Editar */
+            background-color: #4299e1; /* Azul */
+            color: var(--white);
+        }
+        .btn-info-action:hover {
+            background-color: #3182ce;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn-danger-action { /* Para Eliminar */
+            background-color: var(--danger-red);
+            color: var(--white);
+        }
+        .btn-danger-action:hover {
+            background-color: #c53030;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Estilos de paginación */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            padding-left: 0;
+            list-style: none;
+            border-radius: 0.25rem;
+            margin-top: 1rem;
+        }
+
+        .page-item {
+            margin: 0 0.25rem;
+        }
+
+        .page-link {
+            position: relative;
+            display: block;
+            padding: 0.5rem 0.75rem;
+            text-decoration: none;
+            color: #00cfb3; /* Color aqua */
+            background-color: var(--white);
+            border: 1px solid var(--light-gray);
+            border-radius: 0.25rem;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .page-link:hover {
+            z-index: 2;
+            color: var(--white);
+            background-color: #00a89a; /* Aqua más oscuro */
+            border-color: #00a89a;
+        }
+
+        .page-item.active .page-link {
+            z-index: 3;
+            color: var(--white);
+            background-color: #00cfb3;
+            border-color: #00cfb3;
+        }
+
+        .page-item.disabled .page-link {
+            color: var(--medium-gray);
+            pointer-events: none;
+            background-color: var(--light-gray);
+            border-color: var(--light-gray);
+        }
+
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            .list-container {
+                padding: 1rem;
+                border-radius: 0; /* Sin bordes redondeados en ancho completo */
+                box-shadow: none; /* Sin sombra en ancho completo */
+                margin: 0; /* Ocupa todo el espacio en pantallas pequeñas */
+            }
+            .main-title {
+                font-size: 1.5rem;
+                padding: 0.8rem 1rem;
+                margin: -1rem -1rem 1rem -1rem;
+                border-radius: 0;
+            }
+            .btn-add {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+            .data-table th, .data-table td {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.85rem;
+            }
+            .btn-action {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.75rem;
+                margin-right: 0.3rem;
+                display: block; /* Cada botón en su propia línea */
+                margin-bottom: 0.3rem; /* Espacio vertical entre botones */
+                width: calc(100% - 0.6rem); /* Ajusta el ancho para que quepa */
+            }
+            .btn-action:last-child {
+                margin-bottom: 0;
+            }
+            .pagination {
+                margin-top: 0.5rem;
+            }
+            .page-link {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <div layout:fragment="content">
-        <!-- SweetAlert2 messages based on model attributes (el SweetAlert2 script ya está en tu _mainLayout.html) -->
-        <div th:if="${msg != null}">
-            <script th:inline="javascript">
-                Swal.fire({
-                    title: "Confirmación",
-                    text: /*[[${msg}]]*/ 'Mensaje de confirmación',
-                    icon: "success"
-                });
-            </script>
+        <div class="list-container">
+            <!-- SweetAlert2 messages based on model attributes -->
+            <div th:if="${msg != null}">
+                <script th:inline="javascript">
+                    Swal.fire({
+                        title: "Confirmación",
+                        text: /*[[${msg}]]*/ 'Mensaje de confirmación',
+                        icon: "success"
+                    });
+                </script>
+            </div>
+
+            <div th:if="${error != null}">
+                <script th:inline="javascript">
+                    Swal.fire({
+                        title: "Error",
+                        text: /*[[${error}]]*/ 'Mensaje de error',
+                        icon: "error"
+                    });
+                </script>
+            </div>
+
+            <h1 class="main-title">Listado de Médicos</h1>
+            
+            <!-- Enlace para crear un nuevo médico -->
+            <a th:href="@{/medico/create}" class="btn-add">Nuevo Médico</a>
+
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Especialidad</th>
+                            <th>Teléfono</th>
+                            <th>Clínica</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="medico : ${medicos.content}">
+                            <td th:text="${medico.id}"></td>
+                            <td th:text="${medico.nombre}"></td>
+                            <td th:text="${medico.especialidad}"></td>
+                            <td th:text="${medico.telefono}"></td>
+                            <!-- Muestra el nombre de la clínica si existe, de lo contrario 'N/A' -->
+                            <td th:text="${medico.clinica != null ? medico.clinica.nombre : 'N/A'}"></td>
+                            <td>
+                                <a th:href="@{/medico/details/{id}(id=${medico.id})}" class="btn-action btn-secondary-action">Detalles</a>
+                                <a th:href="@{/medico/edit/{id}(id=${medico.id})}" class="btn-action btn-info-action">Editar</a>
+                                <a th:href="@{/medico/remove/{id}(id=${medico.id})}" class="btn-action btn-danger-action"
+                                   onclick="return confirm('¿Está seguro de que desea eliminar este médico?');">Eliminar</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${medicos.isEmpty()}">
+                            <td colspan="6" class="text-center">No hay médicos disponibles.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Paginación -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${medicos.first} ? 'disabled'">
+                        <a class="page-link" th:href="@{/medico(page=${medicos.number})}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:each="pageNumber : ${pageNumbers}"
+                        th:classappend="${pageNumber == medicos.number + 1} ? 'active'">
+                        <a class="page-link" th:href="@{/medico(page=${pageNumber})}" th:text="${pageNumber}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${medicos.last} ? 'disabled'">
+                        <a class="page-link" th:href="@{/medico(page=${medicos.number + 2})}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
-
-        <div th:if="${error != null}">
-            <script th:inline="javascript">
-                Swal.fire({
-                    title: "Error",
-                    text: /*[[${error}]]*/ 'Mensaje de error',
-                    icon: "error"
-                });
-            </script>
-        </div>
-
-        <h1 class="mb-4">Listado de Médicos</h1>
-        <!-- Enlace para crear un nuevo médico -->
-        <a th:href="@{/medico/create}" class="btn btn-primary mb-4">Nuevo Médico</a>
-
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Especialidad</th>
-                        <th>Teléfono</th>
-                        <th>Clínica</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="medico : ${medicos.content}"> <!-- Importante: usar .content para acceder a la lista de objetos Medico dentro de la Page -->
-                        <td th:text="${medico.id}"></td>
-                        <td th:text="${medico.nombre}"></td>
-                        <td th:text="${medico.especialidad}"></td>
-                        <td th:text="${medico.telefono}"></td>
-                        <!-- Muestra el nombre de la clínica si existe, de lo contrario 'N/A' -->
-                        <td th:text="${medico.clinica != null ? medico.clinica.nombre : 'N/A'}"></td>
-                        <td>
-                            <a th:href="@{/medico/details/{id}(id=${medico.id})}" class="btn btn-secondary btn-sm">Detalles</a>
-                            <a th:href="@{/medico/edit/{id}(id=${medico.id})}" class="btn btn-info btn-sm">Editar</a>
-                            <a th:href="@{/medico/remove/{id}(id=${medico.id})}" class="btn btn-danger btn-sm"
-                               onclick="return confirm('¿Está seguro de que desea eliminar este médico?');">Eliminar</a>
-                        </td>
-                    </tr>
-                    <tr th:if="${medicos.isEmpty()}">
-                        <td colspan="6" class="text-center">No hay médicos disponibles.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Paginación -->
-        <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center">
-                <li class="page-item" th:classappend="${medicos.first} ? 'disabled'">
-                    <a class="page-link" th:href="@{/medico(page=${medicos.number})}" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li class="page-item" th:each="pageNumber : ${pageNumbers}"
-                    th:classappend="${pageNumber == medicos.number + 1} ? 'active'">
-                    <a class="page-link" th:href="@{/medico(page=${pageNumber})}" th:text="${pageNumber}"></a>
-                </li>
-                <li class="page-item" th:classappend="${medicos.last} ? 'disabled'">
-                    <a class="page-link" th:href="@{/medico(page=${medicos.number + 2})}" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
     </div>
 </body>
 </html>
