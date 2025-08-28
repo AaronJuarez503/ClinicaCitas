@@ -5,100 +5,310 @@
       layout:decorate="~{layouts/_mainLayout}">
 <head>
     <title>Editar Médico</title>
+    <style>
+        /* Definición de variables CSS para la paleta de colores */
+        :root {
+            --primary-blue: #00fff2;
+            --light-blue: #98faff;
+            --soft-blue: #e8f5ff;
+            --dark-gray: #343A40;
+            --medium-gray: #6C757D;
+            --light-gray: #E9ECEF;
+            --white: #FFFFFF;
+            --off-white: #F8F9FA;
+            --success-green: #28A745;
+            --danger-red: #DC3545;
+            --info-blue: #17A2B8;
+            --gradient-blue-to-light: linear-gradient(135deg, #70f5f1, #00cfb3);
+            --form-background: #f7fafc; /* Fondo para el área del formulario */
+        }
+
+        /* Estilos globales y de cuerpo, replicados para asegurar consistencia si _mainLayout no los tiene */
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            color: var(--dark-gray);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Contenedor principal para la página de edición */
+        .edit-page-container {
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px; /* Ancho máximo para el formulario */
+            margin: 2rem auto; /* Centrar y añadir margen superior */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Estilo para el título principal */
+        .main-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--white);
+            background-image: var(--gradient-blue-to-light);
+            padding: 1rem 1.5rem;
+            margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        /* Estilo para el "card" que contiene el formulario */
+        .form-card {
+            background-color: var(--form-background);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--light-gray);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem; /* Espacio entre grupos de formulario */
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 0.5rem;
+            text-align: left;
+        }
+
+        .form-control, .form-select { /* Añadido .form-select aquí */
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            color: var(--dark-gray);
+            transition: all 0.2s ease-in-out;
+            box-sizing: border-box; /* Asegura que padding y border se incluyan en el ancho total */
+        }
+
+        .form-control:focus, .form-select:focus { /* Añadido .form-select aquí */
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 255, 242, 0.2); /* Sombra de enfoque sutil */
+            outline: none;
+        }
+
+        .form-select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 14px 10px;
+            padding-right: 2.5rem; /* Asegura espacio para el icono */
+        }
+
+        /* Estilos para el botón de guardar cambios */
+        .btn-primary-custom {
+            background-color: #00cfb3; /* Usando tu color aqua principal */
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 0.75rem;
+        }
+        .btn-primary-custom:hover {
+            background-color: #00a89a; /* Tono más oscuro al pasar el ratón */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Estilo para el botón "Cancelar" */
+        .btn-back-custom {
+            background-color: var(--medium-gray);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-back-custom:hover {
+            background-color: var(--dark-gray);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Separador horizontal */
+        hr {
+            border-top: 1px solid var(--light-gray);
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Estilos para los mensajes de error */
+        /* Ocultar por defecto, mostrar solo cuando el formulario es validado y el campo es inválido */
+        .text-danger, .invalid-feedback {
+            color: var(--danger-red);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none; /* Oculto por defecto */
+        }
+
+        /* Mostrar mensajes de error cuando el formulario tiene la clase 'was-validated' y el campo es inválido */
+        .was-validated .form-control:invalid ~ .invalid-feedback,
+        .was-validated .form-select:invalid ~ .invalid-feedback,
+        .was-validated .form-control:invalid + .text-danger { /* Para errores de Thymeleaf */
+            display: block;
+        }
+
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            .edit-page-container {
+                padding: 1rem;
+                border-radius: 0;
+                box-shadow: none;
+                margin: 0; /* Ocupa todo el ancho en móviles */
+                max-width: 100%;
+            }
+            .main-title {
+                font-size: 1.5rem;
+                padding: 0.8rem 1rem;
+                margin: -1rem -1rem 1rem -1rem;
+                border-radius: 0;
+            }
+            .form-card {
+                padding: 1rem;
+                border-radius: 0;
+            }
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            .btn-primary-custom, .btn-back-custom {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 0.75rem;
+            }
+            form {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
 </head>
 <body>
     <div layout:fragment="content">
-        <div class="container mt-5">
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-body p-5">
-                            <div class="text-center mb-4">
-                                <div class="display-6 text-primary mb-3">
-                                    <i class="bi bi-person-gear"></i>
-                                </div>
-                                <h2 class="fw-bold">Editar Médico</h2>
-                                <p class="text-muted">Modifique los datos del médico</p>
-                            </div>
-
-                            <form th:action="@{/medico/save}" method="post" th:object="${medico}" class="needs-validation" novalidate>
-                                <input type="hidden" th:field="*{id}">
-                                
-                                <div class="mb-4">
-                                    <label for="nombre" class="form-label">Nombre Completo</label>
-                                    <input type="text" class="form-control form-control-lg" 
-                                           id="nombre" th:field="*{nombre}" required>
-                                    <div class="invalid-feedback">El nombre del médico es requerido</div>
-                                    <div class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
-                                </div>
-
-                                <div class="mb-4">
-                                    <label for="especialidad" class="form-label">Especialidad</label>
-                                    <input type="text" class="form-control form-control-lg" 
-                                           id="especialidad" th:field="*{especialidad}" required>
-                                    <div class="invalid-feedback">La especialidad es requerida</div>
-                                </div>
-
-                                <div class="mb-4">
-                                    <label for="telefono" class="form-label">Teléfono</label>
-                                    <input type="tel" class="form-control form-control-lg" 
-                                           id="telefono" th:field="*{telefono}" 
-                                           pattern="[0-9]{4}-[0-9]{4}" placeholder="0000-0000" required>
-                                    <div class="invalid-feedback">Ingrese un número de teléfono válido (0000-0000)</div>
-                                </div>
-
-                                <div class="mb-4">
-                                    <label for="clinica" class="form-label">Clínica</label>
-                                    <select class="form-select form-select-lg" id="clinica" th:field="*{clinica.id}" required>
-                                        <option value="">Seleccione una clínica</option>
-                                        <option th:each="clinica : ${allClinicas}"
-                                                th:value="${clinica.id}"
-                                                th:text="${clinica.nombre}"></option>
-                                    </select>
-                                    <div class="invalid-feedback">Seleccione una clínica</div>
-                                </div>
-
-                                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5">
-                                    <a th:href="@{/medico}" class="btn btn-light btn-lg px-5 me-md-2">
-                                        <i class="bi bi-arrow-left me-2"></i>Cancelar
-                                    </a>
-                                    <button type="submit" class="btn btn-primary btn-lg px-5">
-                                        <i class="bi bi-save me-2"></i>Guardar Cambios
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+        <div class="edit-page-container">
+            <h1 class="main-title">Editar Médico</h1>
+            
+            <div class="form-card">
+                <form th:action="@{/medico/save}" method="post" th:object="${medico}" class="needs-validation" novalidate>
+                    <input type="hidden" th:field="*{id}">
+                    
+                    <div class="form-group">
+                        <label for="nombre">Nombre Completo</label>
+                        <input type="text" class="form-control" 
+                               id="nombre" th:field="*{nombre}" placeholder="Escriba el nombre completo del médico" required>
+                        <div class="invalid-feedback">El nombre del médico es requerido</div>
+                        <!-- El error de Thymeleaf se mostrará si está presente después de un envío inválido -->
+                        <div class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
                     </div>
-                </div>
+
+                    <div class="form-group">
+                        <label for="especialidad">Especialidad</label>
+                        <input type="text" class="form-control" 
+                               id="especialidad" th:field="*{especialidad}" placeholder="Escriba la especialidad del médico" required>
+                        <div class="invalid-feedback">La especialidad es requerida</div>
+                        <div class="text-danger" th:if="${#fields.hasErrors('especialidad')}" th:errors="*{especialidad}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telefono">Teléfono</label>
+                        <input type="tel" class="form-control" 
+                               id="telefono" th:field="*{telefono}" 
+                               pattern="[0-9]{4}-[0-9]{4}" placeholder="0000-0000" required>
+                        <div class="invalid-feedback">Ingrese un número de teléfono válido (0000-0000)</div>
+                        <div class="text-danger" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="clinica">Clínica</label>
+                        <select class="form-select" id="clinica" th:field="*{clinica.id}" required>
+                            <option value="">Seleccione una clínica</option>
+                            <option th:each="clinica : ${allClinicas}"
+                                    th:value="${clinica.id}"
+                                    th:text="${clinica.nombre}"></option>
+                        </select>
+                        <div class="invalid-feedback">Seleccione una clínica</div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div style="text-align: center;">
+                        <button type="submit" class="btn-primary-custom">Guardar cambios</button>
+                        <a th:href="@{/medico}" class="btn-back-custom">Cancelar</a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <!-- Script para validación del formulario -->
+    <!-- Script para animación de entrada y validación del formulario -->
     <th:block layout:fragment="script">
         <script>
-            // Validación de Bootstrap
-            (function () {
-                'use strict'
-                var forms = document.querySelectorAll('.needs-validation')
+            document.addEventListener('DOMContentLoaded', function() {
+                // Animación de entrada
+                const container = document.querySelector('.edit-page-container');
+                if (container) {
+                    container.style.opacity = '0';
+                    container.style.transform = 'translateY(20px)';
+                    container.style.transition = 'all 0.3s ease-out';
+                    
+                    setTimeout(() => {
+                        container.style.opacity = '1';
+                        container.style.transform = 'translateY(0)';
+                    }, 100);
+                }
+
+                // Validación de formularios (funcionalidad Bootstrap adaptada)
+                // Los mensajes de error solo se mostrarán después de intentar enviar el formulario
+                var forms = document.querySelectorAll('.needs-validation');
                 Array.prototype.slice.call(forms)
                     .forEach(function (form) {
                         form.addEventListener('submit', function (event) {
                             if (!form.checkValidity()) {
-                                event.preventDefault()
-                                event.stopPropagation()
+                                event.preventDefault();
+                                event.stopPropagation();
                             }
-                            form.classList.add('was-validated')
-                        }, false)
-                    })
-            })()
+                            // Añadir la clase 'was-validated' solo después del intento de envío
+                            form.classList.add('was-validated'); 
+                        }, false);
+                    });
 
-            // Validación adicional del teléfono
-            document.getElementById('telefono').addEventListener('input', function(e) {
-                const value = e.target.value;
-                if (value.length === 4 && !value.includes('-')) {
-                    e.target.value = value + '-';
-                }
+                // Validación adicional del teléfono
+                document.getElementById('telefono').addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, ''); // Eliminar no-dígitos
+                    if (value.length > 4) {
+                        value = value.substring(0, 4) + '-' + value.substring(4, 8);
+                    } else if (value.length > 0) {
+                        value = value.substring(0, 4);
+                    }
+                    e.target.value = value;
+                });
             });
         </script>
     </th:block>
