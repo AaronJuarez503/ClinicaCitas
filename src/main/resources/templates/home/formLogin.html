@@ -37,8 +37,8 @@
 							</div>
 						</form>
 					</div>
-					<div class="row">
-						<p>Don't have an account? <a href="#">Register Here</a></p>
+					<div sec:authorize="isAnonymous()">
+						<p>Don't have an account? <a th:href="@{/usuarios/create}">Register Here</a></p>
 					</div>
 				</div>
 			</div>
