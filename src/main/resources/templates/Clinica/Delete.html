@@ -1,33 +1,212 @@
-<html lang="en"
-    xmlns="http://thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="/layouts/_mainLayout.html">
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/_mainLayout}">
+<head>
+    <title>Eliminar Clínica</title>
+    <style>
+        /* Definición de variables CSS para la paleta de colores */
+        :root {
+            --primary-blue: #00fff2;
+            --light-blue: #98faff;
+            --soft-blue: #e8f5ff;
+            --dark-gray: #343A40;
+            --medium-gray: #6C757D;
+            --light-gray: #E9ECEF;
+            --white: #FFFFFF;
+            --off-white: #F8F9FA;
+            --success-green: #28A745;
+            --danger-red: #DC3545; /* Rojo base para acciones de peligro */
+            --info-blue: #17A2B8;
+            --gradient-blue-to-light: linear-gradient(135deg, #70f5f1, #00cfb3);
 
-<div layout:fragment="content">
+            /* Nuevos colores para el gradiente de eliminación */
+            --soft-red-pink: #F7CACB; /* Rojo rosado suave */
+            --old-rose-color: #C28B8B; /* Rosado vieja */
+            --pure-white: #FFFFFF;    /* Blanco */
+            --delete-gradient-background: linear-gradient(135deg, var(--soft-red-pink), var(--old-rose-color), var(--pure-white));
+        }
 
-    <h1>Detalles de clinica</h1>
-    <h3>¿ Estas seguro que deseas eliminar esta clinica ?</h3>
-    <div>
-        <hr />
-        <dl class="row">
-            <dt class = "col-sm-2" >ID</dt>
-            <dd class = "col-sm-10" th:text="${clinica.id}"></dd>
+        /* Estilos globales y de cuerpo, replicados para asegurar consistencia si _mainLayout no los tiene */
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            color: var(--dark-gray);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
 
-            <dt class = "col-sm-2">Nombre</dt>
-            <dd class = "col-sm-10" th:text="${clinica.nombre}"></dd>
+        /* Contenedor principal para la página de eliminación */
+        /* Asegura que ocupe todo el ancho disponible y se alinee como el resto de tus CRUDs */
+        .delete-page-container {
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            box-sizing: border-box;
+        }
 
-            <dt class = "col-sm-2">Direccion</dt>
-            <dd class = "col-sm-10" th:text="${clinica.direccion}"></dd>
+        /* Estilo para el título principal */
+        .main-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--white);
+            background-image: var(--gradient-blue-to-light);
+            padding: 1rem 1.5rem;
+            margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
 
-            <dt class = "col-sm-2">Telefono</dt>
-            <dd class = "col-sm-10" th:text="${clinica.telefono}"></dd>
-        </dl>
+        /* Estilo para el mensaje de confirmación de eliminación */
+        .confirmation-message {
+            font-size: 1.25rem; /* Ajustado para que se vea bien dentro del card */
+            color: var(--danger-red);
+            margin-bottom: 1rem; /* Margen inferior para separarlo de la lista de detalles */
+            font-weight: 600; /* Un poco más de peso para resaltar */
+            text-align: center; /* Centrar el texto dentro del card */
+            padding-top: 0.5rem; /* Pequeño padding superior dentro del card */
+        }
 
-         <form th:action="@{/clinica/delete}" method="post">
-            <input type="hidden" name="Id" th:value="${clinica.id}">
-            <input type="submit" value="Eliminar" class="btn btn-danger"> |
-            <a th:href="@{/clinica}">Regresar</a>
-        </form>
+        /* Estilo para el "card" que contiene los detalles de la clínica */
+        .clinica-details-card {
+            background-image: var(--delete-gradient-background); /* Aplica el gradiente */
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            margin-bottom: 1.5rem;
+            color: var(--dark-gray); /* Asegura que el texto sea legible sobre el gradiente */
+            border: 1px solid rgba(0,0,0,0.1);
+        }
 
+        .clinica-details-card hr {
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .clinica-details-card dl.row {
+            margin-bottom: 1rem;
+        }
+
+        .clinica-details-card dt {
+            font-weight: 600;
+            color: var(--medium-gray);
+        }
+
+        /* Estilo para el botón de eliminación personalizado */
+        .btn-delete-custom {
+            background-color: var(--danger-red);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 0.75rem; /* Espacio para el botón "Regresar" */
+        }
+        .btn-delete-custom:hover {
+            background-color: #c53030; /* Tono más oscuro al pasar el ratón */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Estilo para el botón "Regresar" */
+        .btn-back {
+            background-color: var(--medium-gray);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-back:hover {
+            background-color: var(--dark-gray);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            .delete-page-container {
+                padding: 1rem;
+                border-radius: 0;
+                box-shadow: none;
+                margin: 0;
+            }
+            .main-title {
+                font-size: 1.5rem;
+                padding: 0.8rem 1rem;
+                margin: -1rem -1rem 1rem -1rem;
+                border-radius: 0;
+            }
+            .confirmation-message {
+                font-size: 1.1rem;
+                margin-bottom: 0.75rem;
+            }
+            .clinica-details-card {
+                padding: 1rem;
+            }
+            .btn-delete-custom, .btn-back {
+                width: calc(100% - 1rem); /* Ajusta el ancho para el padding */
+                margin-right: 0;
+                margin-bottom: 0.75rem;
+            }
+            form {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="delete-page-container">
+            <h1 class="main-title">Eliminar Clínica</h1>
+            
+            <div class="clinica-details-card">
+                <h3 class="confirmation-message">¿Estás seguro de que deseas eliminar esta clínica?</h3>
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-2">ID</dt>
+                    <dd class="col-sm-10" th:text="${clinica.id}"></dd>
+
+                    <dt class="col-sm-2">Nombre</dt>
+                    <dd class="col-sm-10" th:text="${clinica.nombre}"></dd>
+
+                    <dt class="col-sm-2">Dirección</dt>
+                    <dd class="col-sm-10" th:text="${clinica.direccion}"></dd>
+
+                    <dt class="col-sm-2">Teléfono</dt>
+                    <dd class="col-sm-10" th:text="${clinica.telefono}"></dd>
+                </dl>
+
+                <form th:action="@{/clinica/delete}" method="post">
+                    <input type="hidden" name="Id" th:value="${clinica.id}">
+                    <input type="submit" value="Eliminar" class="btn-delete-custom">
+                    <a th:href="@{/clinica}" class="btn-back">Regresar</a>
+                </form>
+            </div>
+        </div>
     </div>
-</div>
+</body>
+</html>
