@@ -193,50 +193,57 @@
 </head>
 <body>
     <div layout:fragment="content">
-        <div class="form-container">
-            <h1 class="main-title">Agendar Cita</h1>
-            <!-- Formulario para la creación de Citas -->
-            <form th:action="@{/cita/save}" th:object="${cita}" method="post">
-                <div class="form-layout">
-                    <div class="form-section">
-                        <label for="paciente" class="form-label">Paciente</label>
-                        <select class="select-control" th:field="*{paciente}" id="paciente" required>
-                            <option value="">Seleccione un paciente</option>
-                            <option th:each="p : ${allPacientes}" th:value="${p.id}" th:text="${p.nombre}"></option>
-                        </select>
-                        <div class="invalid-feedback" th:if="${#fields.hasErrors('paciente')}" th:errors="*{paciente}"></div>
-                    </div>
-                    
-                    <div class="form-section">
-                        <label for="especialidad" class="form-label">Especialidad</label>
-                        <select class="select-control" id="especialidad" required>
-                            <option value="">Seleccione una especialidad</option>
-                            <option th:each="esp : ${especialidades}" th:value="${esp}" th:text="${esp}"></option>
-                        </select>
-                    </div>
+    <div class="form-container">
+        <h1 class="main-title">Crear Nueva Cita</h1>
 
-                    <div class="form-section">
-                        <label for="medico" class="form-label">Médico</label>
-                        <select class="select-control" th:field="*{medico}" id="medico" required>
-                            <option value="">Seleccione un médico</option>
-                            <option th:each="m : ${allMedicos}" th:value="${m.id}" th:text="${m.nombre}" th:data-especialidad="${m.especialidad}"></option>
-                        </select>
-                        <div class="invalid-feedback" th:if="${#fields.hasErrors('medico')}" th:errors="*{medico}"></div>
-                    </div>
-                    
-                    <div class="form-section">
-                        <label for="fecha" class="form-label">Fecha y Hora</label>
-                        <input type="datetime-local" class="form-control" th:field="*{fecha}" id="fecha" required>
-                        <div class="invalid-feedback" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></div>
-                    </div>
-                    
-                    <div class="form-section">
-                        <label for="motivo" class="form-label">Motivo</label>
-                        <textarea class="form-control" th:field="*{motivo}" id="motivo" rows="3" placeholder="Describa el motivo de la cita"></textarea>
-                        <div class="invalid-feedback" th:if="${#fields.hasErrors('motivo')}" th:errors="*{motivo}"></div>
-                    </div>
-                    
-                    <div class="form-section section-full-width">
+        <!-- Formulario para la creación de Citas -->
+        <form th:action="@{/cita/save}" th:object="${cita}" method="post">
+            <div class="form-layout">
+                <!-- Paciente -->
+                <div class="form-section">
+                    <label for="paciente" class="form-label">Paciente</label>
+                    <select class="select-control" th:field="*{paciente}" id="paciente" required>
+                        <option value="">Seleccione un paciente</option>
+                        <option th:each="p : ${allPacientes}" th:value="${p.id}" th:text="${p.nombre}"></option>
+                    </select>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('paciente')}" th:errors="*{paciente}"></div>
+                </div>
+
+                <!-- Especialidad -->
+                <div class="form-section">
+                    <label for="especialidad" class="form-label">Especialidad</label>
+                    <select class="select-control" id="especialidad" required>
+                        <option value="">Seleccione una especialidad</option>
+                        <option th:each="esp : ${especialidades}" th:value="${esp}" th:text="${esp}"></option>
+                    </select>
+                </div>
+
+                <!-- Médico -->
+                <div class="form-section">
+                    <label for="medico" class="form-label">Médico</label>
+                    <select class="select-control" th:field="*{medico}" id="medico" required>
+                        <option value="">Seleccione un médico</option>
+                        <option th:each="m : ${allMedicos}" th:value="${m.id}" th:text="${m.nombre}" th:data-especialidad="${m.especialidad}"></option>
+                    </select>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('medico')}" th:errors="*{medico}"></div>
+                </div>
+
+                <!-- Fecha -->
+                <div class="form-section">
+                    <label for="fecha" class="form-label">Fecha y Hora</label>
+                    <input type="datetime-local" class="form-control" th:field="*{fecha}" id="fecha" required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></div>
+                </div>
+
+                <!-- Motivo -->
+                <div class="form-section" id="motivo-section">
+                    <label for="motivo" class="form-label">Motivo</label>
+                    <textarea class="form-control" th:field="*{motivo}" id="motivo" rows="3" placeholder="Describa el motivo de la cita"></textarea>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('motivo')}" th:errors="*{motivo}"></div>
+                </div>
+
+                <!-- Estado (ocupa todo el ancho) -->
+                <div class="form-section section-full-width">
                          <div class="mb-4">
                                <label for="estado" class="form-label">Estado</label>
                 <input type="hidden" th:field="*{estado}" th:value="PROGRAMADA" />
@@ -244,42 +251,36 @@
                 <div class="invalid-feedback" th:if="${#fields.hasErrors('estado')}" th:errors="*{estado}"></div>
             </div>
         </div>
-                </div>
+            </div>
 
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-success">Guardar Cita</button>
-                    <a th:href="@{/cita}" class="btn btn-secondary">Regresar</a>
-                </div>
-            </form>
-        </div>
+            <!-- Botones -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success">Guardar Cita</button>
+                <a th:href="@{/cita}" class="btn btn-secondary">Regresar</a>
+            </div>
+        </form>
     </div>
 
-    <!-- Script para la lógica de los selects anidados -->
-    <script>
+    <!-- Script para filtrar médicos por especialidad -->
+    <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', function() {
             const especialidadSelect = document.getElementById('especialidad');
             const medicoSelect = document.getElementById('medico');
-            const allMedicos = /*[[${allMedicos}]]*/ [];
+            const medicoOptions = Array.from(medicoSelect.options);
 
             especialidadSelect.addEventListener('change', function() {
                 const selectedEspecialidad = this.value;
-                
-                // Limpiar el select de médicos
                 medicoSelect.innerHTML = '<option value="">Seleccione un médico</option>';
-                
                 if (selectedEspecialidad) {
-                    // Filtrar y mostrar solo los médicos de la especialidad seleccionada
-                    allMedicos.forEach(medico => {
-                        if (medico.especialidad === selectedEspecialidad) {
-                            const option = document.createElement('option');
-                            option.value = medico.id;
-                            option.textContent = medico.nombre;
-                            medicoSelect.appendChild(option);
+                    medicoOptions.forEach(option => {
+                        if (option.dataset.especialidad === selectedEspecialidad) {
+                            medicoSelect.add(option.cloneNode(true));
                         }
                     });
                 }
             });
         });
     </script>
+</div>
 </body>
 </html>
