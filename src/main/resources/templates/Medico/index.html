@@ -290,7 +290,10 @@
             <h1 class="main-title">Listado de Médicos</h1>
             
             <!-- Enlace para crear un nuevo médico -->
-            <a th:href="@{/medico/create}" class="btn-add">Nuevo Médico</a>
+            <a th:href="@{/medico/create}" 
+             class="btn-add"
+             sec:authorize="hasAnyAuthority('medico')"
+             >Nuevo Médico</a>
 
             <div class="table-responsive">
                 <table class="data-table">
@@ -312,12 +315,25 @@
                             <td th:text="${medico.telefono}"></td>
                             <!-- Muestra el nombre de la clínica si existe, de lo contrario 'N/A' -->
                             <td th:text="${medico.clinica != null ? medico.clinica.nombre : 'N/A'}"></td>
+
                             <td>
-                                <a th:href="@{/medico/details/{id}(id=${medico.id})}" class="btn-action btn-secondary-action">Detalles</a>
-                                <a th:href="@{/medico/edit/{id}(id=${medico.id})}" class="btn-action btn-info-action">Editar</a>
-                                <a th:href="@{/medico/remove/{id}(id=${medico.id})}" class="btn-action btn-danger-action"
-                                   onclick="return confirm('¿Está seguro de que desea eliminar este médico?');">Eliminar</a>
+                                <a th:href="@{/medico/details/{id}(id=${medico.id})}" 
+                                 class="btn-action btn-secondary-action"
+                                 sec:authorize="hasAnyAuthority('medico', 'paciente')"
+                                 >Detalles</a>
+
+                                <a th:href="@{/medico/edit/{id}(id=${medico.id})}" 
+                                 class="btn-action btn-info-action"
+                                 sec:authorize="hasAnyAuthority('medico')"
+                                 >Editar</a>
+
+                                <a th:href="@{/medico/remove/{id}(id=${medico.id})}"
+                                 class="btn-action btn-danger-action"
+                                 onclick="return confirm('¿Está seguro de que desea eliminar este médico?');"
+                                 sec:authorize="hasAnyAuthority('medico')"
+                                 >Eliminar</a>
                             </td>
+
                         </tr>
                         <tr th:if="${medicos.isEmpty()}">
                             <td colspan="6" class="text-center">No hay médicos disponibles.</td>

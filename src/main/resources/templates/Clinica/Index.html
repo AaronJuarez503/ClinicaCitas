@@ -290,7 +290,9 @@
             <h1 class="main-title">Listado de Clínicas</h1>
             
             <!-- Botón para crear nueva clínica -->
-            <a th:href="@{/clinica/create}" class="btn-add">Nueva Clínica</a>
+            <a th:href="@{/clinica/create}" class="btn-add"
+            sec:authorize="hasAnyAuthority('medico')"
+            >Nueva Clínica</a>
             
             <div class="table-responsive">
                 <table class="data-table">
@@ -309,12 +311,25 @@
                             <td th:text="${item.nombre}"></td>
                             <td th:text="${item.direccion}"></td>
                             <td th:text="${item.telefono}"></td>
+
                             <td>
-                                <a th:href="@{/clinica/details/{id}(id=${item.id})}" class="btn-action btn-secondary-action">Detalles</a>
-                                <a th:href="@{/clinica/edit/{id}(id=${item.id})}" class="btn-action btn-info-action">Editar</a>
-                                <a th:href="@{/clinica/remove/{id}(id=${item.id})}" class="btn-action btn-danger-action"
-                                   onclick="return confirm('¿Está seguro de que desea eliminar esta clínica?');">Eliminar</a>
+                                <a th:href="@{/clinica/details/{id}(id=${item.id})}"
+                                 class="btn-action btn-secondary-action"
+                                 sec:authorize="hasAnyAuthority('medico','paciente')"
+                                 >Detalles</a>
+
+                                <a th:href="@{/clinica/edit/{id}(id=${item.id})}" 
+                                 class="btn-action btn-info-action"
+                                 sec:authorize="hasAnyAuthority('medico')"
+                                 >Editar</a>
+
+                                <a th:href="@{/clinica/remove/{id}(id=${item.id})}"
+                                 class="btn-action btn-danger-action"
+                                 onclick="return confirm('¿Está seguro de que desea eliminar esta clínica?');"
+                                 sec:authorize="hasAnyAuthority('medico')"
+                                 >Eliminar</a>
                             </td>
+                            
                         </tr>
                         <tr th:if="${clinicas.isEmpty()}">
                             <td colspan="5" class="text-center">No hay clínicas disponibles.</td>

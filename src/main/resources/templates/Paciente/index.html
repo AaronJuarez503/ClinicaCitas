@@ -290,7 +290,10 @@
             <h1 class="main-title">Listado de Pacientes</h1>
             
             <!-- Enlace para crear un nuevo paciente -->
-            <a th:href="@{/paciente/create}" class="btn-add">Nuevo Paciente</a>
+            <a th:href="@{/paciente/create}"
+             class="btn-add"
+             sec:authorize="hasAnyAuthority('paciente')"
+             >Nuevo Paciente</a>
 
             <div class="table-responsive">
                 <table class="data-table">
@@ -313,12 +316,24 @@
                             <td th:text="${paciente.genero}"></td>
                             <td th:text="${paciente.telefono}"></td>
                             <td th:text="${paciente.email}"></td>
+
                             <td>
-                                <a th:href="@{/paciente/details/{id}(id=${paciente.id})}" class="btn-action btn-secondary-action">Detalles</a>
-                                <a th:href="@{/paciente/edit/{id}(id=${paciente.id})}" class="btn-action btn-info-action">Editar</a>
-                                <a th:href="@{/paciente/remove/{id}(id=${paciente.id})}" class="btn-action btn-danger-action"
-                                   onclick="return confirm('¿Está seguro de que desea eliminar este paciente?');">Eliminar</a>
+                                <a th:href="@{/paciente/details/{id}(id=${paciente.id})}"
+                                 class="btn-action btn-secondary-action"
+                                 sec:authorize="hasAnyAuthority('medico')"
+                                 >Detalles</a>
+
+                                <a th:href="@{/paciente/edit/{id}(id=${paciente.id})}"
+                                 class="btn-action btn-info-action"
+                                 sec:authorize="hasAnyAuthority('paciente')"
+                                 >Editar</a>
+                                <a th:href="@{/paciente/remove/{id}(id=${paciente.id})}"
+                                 class="btn-action btn-danger-action"
+                                 onclick="return confirm('¿Está seguro de que desea eliminar este paciente?');"
+                                 sec:authorize="hasAnyAuthority('paciente')"
+                                 >Eliminar</a>
                             </td>
+
                         </tr>
                         <tr th:if="${pacientes.isEmpty()}">
                             <td colspan="7" class="text-center">No hay pacientes disponibles.</td>

@@ -232,6 +232,7 @@ body {
     padding: 0.8rem 1.5rem; /* Padding similar a otros ítems */
     border: none;
     background-color: transparent;
+    margin-top: 270px;  
     /* Para que quede pegado al final del listado, sin auto margin */
     /* Considera si necesitas flex-grow: 0 en la lista de arriba si no se comporta como esperas */
 }
