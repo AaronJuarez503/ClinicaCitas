@@ -196,6 +196,11 @@
     <div class="form-container">
         <h1 class="main-title">Crear Nueva Cita</h1>
 
+        <!-- Mensaje de error -->
+        <div th:if="${error}" class="alert alert-danger" role="alert" style="margin-bottom: 1rem; padding: 1rem; border-radius: 0.5rem; background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24;">
+            <span th:text="${error}"></span>
+        </div>
+
         <!-- Formulario para la creación de Citas -->
         <form th:action="@{/cita/save}" th:object="${cita}" method="post">
             <div class="form-layout">

@@ -8,6 +8,8 @@ import java.util.stream.IntStream;
 import org.esfe.modelos.Cita;
 import org.esfe.modelos.Medico;
 import org.esfe.modelos.Paciente;
+import org.esfe.excepciones.CitaExistenteException;
+import org.esfe.excepciones.HorarioInvalidoException;
 import org.esfe.servicios.interfaces.ICitaService;
 import org.esfe.servicios.interfaces.IMedicoService;
 import org.esfe.servicios.interfaces.IPacienteService;
@@ -33,6 +35,20 @@ import jakarta.validation.Valid;
 @Controller
 @RequestMapping("/cita")
 public class CitaController {
+
+    private void cargarDatosFormulario(Model model) {
+        List<Paciente> allPacientes = pacienteService.obtenerTodas();
+        List<Medico> allMedicos = medicoService.obtenerTodas();
+        
+        // Obtener lista única de especialidades
+        Set<String> especialidades = allMedicos.stream()
+                                             .map(Medico::getEspecialidad)
+                                             .collect(Collectors.toSet());
+
+        model.addAttribute("allPacientes", allPacientes);
+        model.addAttribute("allMedicos", allMedicos);
+        model.addAttribute("especialidades", especialidades);
+    }
     @Autowired
     private ICitaService citaService;
 
@@ -68,38 +84,32 @@ public class CitaController {
     @GetMapping("/create")
     public String create(Model model) {
         model.addAttribute("cita", new Cita());
-        List<Paciente> allPacientes = pacienteService.obtenerTodas();
-        List<Medico> allMedicos = medicoService.obtenerTodas();
-        
-        // Obtener lista única de especialidades
-        Set<String> especialidades = allMedicos.stream()
-                                             .map(Medico::getEspecialidad)
-                                             .collect(Collectors.toSet());
-
-        model.addAttribute("allPacientes", allPacientes);
-        model.addAttribute("allMedicos", allMedicos);
-        model.addAttribute("especialidades", especialidades);
+        cargarDatosFormulario(model);
         return "citas/create";
     }
 
     @PostMapping("/save")
     public String save(@Valid @ModelAttribute("cita") Cita cita, BindingResult result, RedirectAttributes attributes, Model model) {
         if (result.hasErrors()) {
+            cargarDatosFormulario(model); // Método auxiliar para cargar todos los datos necesarios
             model.addAttribute("error", "Error al guardar la cita. Verifique los campos.");
-            List<Paciente> allPacientes = pacienteService.obtenerTodas();
-            List<Medico> allMedicos = medicoService.obtenerTodas();
-            model.addAttribute("allPacientes", allPacientes);
-            model.addAttribute("allMedicos", allMedicos);
-            // CAMBIO AQUI: Si hay error, regresa a la vista en la carpeta "citas"
             return "citas/create";
         }
         try {
             citaService.crearOCambiar(cita);
             attributes.addFlashAttribute("msg", "Cita guardada exitosamente!");
+            return "redirect:/cita";
+        } catch (CitaExistenteException | HorarioInvalidoException e) {
+            cargarDatosFormulario(model); // Método auxiliar para cargar todos los datos necesarios
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("cita", cita); // Mantener los datos ingresados
+            return "citas/create";
         } catch (Exception e) {
-            attributes.addFlashAttribute("error", "Hubo un error al guardar la cita: " + e.getMessage());
+            cargarDatosFormulario(model); // Método auxiliar para cargar todos los datos necesarios
+            model.addAttribute("error", "Hubo un error al guardar la cita: " + e.getMessage());
+            model.addAttribute("cita", cita); // Mantener los datos ingresados
+            return "citas/create";
         }
-        return "redirect:/cita";
     }
 
     @GetMapping("/details/{id}")
