@@ -602,3 +602,20 @@ hr { margin-top: 1.5rem; margin-bottom: 1.5rem; border: 0; border-top: 1px solid
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
+
+.sidebar-user {
+    margin-top: 162px;         /* Ajustar espacio superior */
+    padding: 10px;            /* Añadir más padding alrededor */
+    display: flex;            /* Flexbox para centrar el texto */
+    justify-content: left;  /* Asegura que el contenido esté centrado */
+    align-items: center;      /* Alineación vertical */
+    color: white;             /* Color de texto blanco */
+    font-size: 1rem;       /* Hacer el texto más destacado */
+    background-color: rgba(0, 0, 0, 0.171); /* Fondo oscuro y semitransparente */
+    border-radius: 5px;       /* Bordes redondeados */
+}
+
+/* Estilo para el texto de nombre de usuario */
+.sidebar-user span {
+    margin-left: 5px;         /* Un poco de espacio entre el texto */
+}
