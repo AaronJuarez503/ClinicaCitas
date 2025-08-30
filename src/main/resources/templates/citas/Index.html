@@ -327,7 +327,6 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Paciente</th>
                             <th>Médico</th>
                             <th>Fecha y Hora</th>
@@ -338,7 +337,6 @@
                     </thead>
                     <tbody>
                         <tr th:each="cita : ${citas.content}">
-                            <td th:text="${cita.id}"></td>
                             <td th:text="${cita.paciente != null ? cita.paciente.nombre : 'N/A'}"></td>
                             <td th:text="${cita.medico != null ? cita.medico.nombre : 'N/A'}"></td>
                             <td th:text="${#temporals.format(cita.fecha, 'dd-MM-yyyy HH:mm')}"></td>
@@ -351,13 +349,6 @@
                                       th:text="${cita.estado.name()}" class="badge"></span>
                             </td>
                             <td>
-                                <!-- Detalles: visible para medico y paciente -->
-                                <a th:href="@{/cita/details/{id}(id=${cita.id})}"
-                                class="btn-action btn-secondary-action"
-                                sec:authorize="hasAnyAuthority('medico', 'paciente')">
-                                Detalles
-                                </a>
-
                                 <!-- Editar: solo medico -->
                                 <a th:href="@{/cita/edit/{id}(id=${cita.id})}"
                                 class="btn-action btn-info-action"

@@ -171,10 +171,6 @@
         <div class="form-container">
             <h1 class="main-title">Detalles de la Clínica</h1>
 
-            <div class="detail-section">
-                <label class="detail-label">ID:</label>
-                <span class="detail-value" th:text="${clinica.id}"></span>
-            </div>
 
             <div class="detail-section">
                 <label class="detail-label">Nombre:</label>
@@ -207,7 +203,7 @@
 
             <div class="form-actions">
                 <!-- Botón Editar ahora usa el estilo btn-info -->
-                <a th:href="@{/clinica/edit/{id}(id=${clinica.id})}" class="btn btn-info">Editar</a>
+                <a th:href="@{/clinica/edit/{id}(id=${clinica.id})}" class="btn btn-info" sec:authorize="hasAuthority('medico')">Editar</a>
                 <!-- El botón Regresar ahora usa el estilo btn-secondary -->
                 <a th:href="@{/clinica}" class="btn btn-secondary">Regresar</a>
             </div>

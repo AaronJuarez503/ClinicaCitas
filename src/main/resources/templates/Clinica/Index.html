@@ -298,7 +298,6 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Nombre</th>
                             <th>Dirección</th>
                             <th>Teléfono</th>
@@ -306,8 +305,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="item : ${clinicas.content}"> <!-- Usar .content para acceder a la lista de objetos Clinica -->
-                            <td th:text="${item.id}"></td>
+                        <tr th:each="item : ${clinicas.content}">
                             <td th:text="${item.nombre}"></td>
                             <td th:text="${item.direccion}"></td>
                             <td th:text="${item.telefono}"></td>
