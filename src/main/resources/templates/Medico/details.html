@@ -21,13 +21,6 @@
                             </div>
 
                             <div class="row g-4">
-                                <!-- ID del Médico -->
-                                <div class="col-md-6">
-                                    <div class="p-4 border rounded-3 bg-light h-100">
-                                        <h6 class="text-muted mb-2">ID del Médico</h6>
-                                        <p class="h5 mb-0" th:text="${medico.id}"></p>
-                                    </div>
-                                </div>
 
                                 <!-- Nombre -->
                                 <div class="col-md-6">
@@ -66,7 +59,8 @@
                                 <a th:href="@{/medico}" class="btn btn-light btn-lg px-4 me-md-2">
                                     <i class="bi bi-arrow-left me-2"></i>Volver
                                 </a>
-                                <a th:href="@{/medico/edit/{id}(id=${medico.id})}" class="btn btn-primary btn-lg px-4 me-md-2">
+                                <a th:href="@{/medico/edit/{id}(id=${medico.id})}" class="btn btn-primary btn-lg px-4 me-md-2"
+                                   sec:authorize="hasAnyAuthority('medico')">
                                     <i class="bi bi-pencil me-2"></i>Editar
                                 </a>
                             </div>
