@@ -31,6 +31,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.Set;
 import java.util.stream.Collectors;
 import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.esfe.modelos.Usuario;
 
 @Controller
 @RequestMapping("/cita")
@@ -89,13 +91,23 @@ public class CitaController {
     }
 
     @PostMapping("/save")
-    public String save(@Valid @ModelAttribute("cita") Cita cita, BindingResult result, RedirectAttributes attributes, Model model) {
+    public String save(@Valid @ModelAttribute("cita") Cita cita, BindingResult result, RedirectAttributes attributes, Model model,
+                      @AuthenticationPrincipal Usuario usuarioActual) {
         if (result.hasErrors()) {
-            cargarDatosFormulario(model); // Método auxiliar para cargar todos los datos necesarios
+            cargarDatosFormulario(model);
             model.addAttribute("error", "Error al guardar la cita. Verifique los campos.");
             return "citas/create";
         }
+
         try {
+            // Si es una actualización y el usuario no es médico, mantenemos el estado anterior
+            if (cita.getId() != null && usuarioActual != null && !usuarioActual.getRoles().stream()
+                    .anyMatch(rol -> "MEDICO".equals(rol.getNombre()))) {
+                Cita citaExistente = citaService.buscarPorId(cita.getId())
+                    .orElseThrow(() -> new RuntimeException("Cita no encontrada"));
+                cita.setEstado(citaExistente.getEstado());
+            }
+            
             citaService.crearOCambiar(cita);
             attributes.addFlashAttribute("msg", "Cita guardada exitosamente!");
             return "redirect:/cita";
@@ -120,8 +132,13 @@ public class CitaController {
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
-        // CAMBIO AQUI: La vista ahora está en la carpeta "citas"
-        return "citas/edit";
+        Optional<Cita> citaOpt = citaService.buscarPorId(id);
+        if (citaOpt.isPresent()) {
+            model.addAttribute("cita", citaOpt.get());
+            cargarDatosFormulario(model); // Carga pacientes, médicos y especialidades
+            return "citas/Edit";
+        }
+        return "redirect:/cita";
     }
 
     @GetMapping("/remove/{id}")

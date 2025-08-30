@@ -31,9 +31,10 @@ public class Cita {
 
     // Enum para el campo estado
     public enum Estado {
-        Programada,
-        Cancelada,
-        Completada
+        Programada,    // Estado inicial
+        Confirmada,    // Cuando el médico confirma la cita
+        Completada,    // Cuando el médico marca la cita como realizada
+        Cancelada      // Si se necesita cancelar
     }
 
     // Getters y Setters
