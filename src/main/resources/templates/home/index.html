@@ -198,7 +198,8 @@
 
         <!-- Usuario con rol PACIENTE -->
         <div class="home-container" sec:authorize="hasAnyAuthority('paciente')">
-            <h1 class="main-title">Bienvenido Paciente</h1>
+            <h1 class="main-title">Bienvenido </span>
+                        <span class="text-light" sec:authentication="name"></span></h1>
             <p class="description">Aquí puedes gestionar tus citas, ver medicos por especialidad y sus clinicas.</p>
             <img src="https://www.shutterstock.com/image-vector/clipboard-stethoscope-medical-check-form-600nw-1874538058.jpg"
                  style="width: 350px; height: 350px;"/>
@@ -206,7 +207,8 @@
 
         <!-- Usuario con rol MÉDICO -->
         <div class="home-container" sec:authorize="hasAnyAuthority('medico')">
-            <h1 class="main-title">Bienvenido Doctor</h1>
+            <h1 class="main-title">Bienvenido </span>
+                        <span class="text-light" sec:authentication="name"></span></h1>
             <p class="description">Consulta tus citas asignadas y gestiona tus pacientes.</p>
             <img src="https://images.vexels.com/media/users/3/151981/isolated/preview/f8863741dba8034b3e1d4809a01c782a-estetoscopio-icono-medico-iconos.png"
                  style="width: 350px; height: 350px;"/>
